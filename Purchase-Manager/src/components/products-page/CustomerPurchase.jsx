@@ -15,9 +15,13 @@ const CustomerPurchase = ({ customer, handleSave }) => {
     };
     const handleLocalSave = () => {
         var product = products.find((product) => product.id === parseInt(selectedProduct, 10))
-        handleSave(id, product);
-        setSelectedProduct('');
-        setIsAddingProduct(false);
+        if (product.quantity > 1) {
+            handleSave(id, product);
+            setSelectedProduct('');
+            setIsAddingProduct(false);
+        } else {
+            alert('Product is out of stock')
+        }
     }
 
     return (

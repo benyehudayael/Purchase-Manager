@@ -43,14 +43,21 @@ const EditCustomerPage = () => {
     const handleUpdateCustomer = (event) => {
         event.preventDefault();
 
-        const updatedCustomer = {
-            id: customer.id,
-            firstName: customerFirstName,
-            lastName: customerLastName,
-            city: customerCity,
-        };
+        if (!customerFirstName || !customerLastName || !customerCity) {
+            alert("Please fill in all the required fields");
+        }
+        else {
+            const updatedCustomer = {
+                id: customer.id,
+                firstName: customerFirstName,
+                lastName: customerLastName,
+                city: customerCity,
+            };
 
-        dispatch(updateCustomer(updatedCustomer));
+            dispatch(updateCustomer(updatedCustomer));
+            alert("Awesome! You've successfully updated the customer.")
+        }
+
     };
 
     const handleDeleteCustomer = () => {

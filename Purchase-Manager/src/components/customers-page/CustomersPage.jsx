@@ -51,24 +51,21 @@ const CustomersPage = () => {
 
     return (
         <>
-            <Typography variant="h3">Customers</Typography>
+            <Typography style={{ width: 'fit-content', margin: '1rem auto 1rem auto' }} variant="h3">Customer Purchases</Typography>
             <div style={{ display: 'flex', justifyContent: 'space-around' }}>
                 <div className="region1">
                     <PurchasesTable purchases={purchases} />
                 </div>
                 <div className="region2">
-                    <Button onClick={() => setIsFormOpen(true)}>Buy Product</Button>
+                    <Button style={{ backgroundColor: 'black', color: 'white', margin: '16px' }} onClick={() => setIsFormOpen(true)}>Buy Product</Button>
                     {isFormOpen && (
-                        <form>
+                        <form style={{ gap: '1rem', }}>
                             <FormControl>
                                 <InputLabel>Select Product</InputLabel>
                                 <Select
                                     value={selectedProduct}
                                     onChange={e => setSelectedProduct(e.target.value)}
                                 >
-                                    <MenuItem value="">
-                                        <em>None</em>
-                                    </MenuItem>
                                     {products.map(product => (
                                         <MenuItem key={product.id} value={product.id}>
                                             {product.name}
@@ -83,9 +80,6 @@ const CustomersPage = () => {
                                     value={selectedCustomer}
                                     onChange={e => setSelectedCustomer(e.target.value)}
                                 >
-                                    <MenuItem value="">
-                                        <em>None</em>
-                                    </MenuItem>
                                     {customers.map(customer => (
                                         <MenuItem key={customer.id} value={customer.id}>
                                             {customer.firstName} {customer.lastName}

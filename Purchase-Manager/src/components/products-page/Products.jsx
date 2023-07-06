@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Box } from '@mui/material';
+import { Card, CardContent, Typography, Button } from '@mui/material';
 import Product from './Product';
 
 const ProductsPage = () => {
@@ -19,9 +20,9 @@ const ProductsPage = () => {
             {/* Region 1 */}
             <Box>
                 <h2>Total Purchased Products:</h2>
-                <Box>
-                    <h2>{totalPurchasedProducts}</h2>
-                </Box>
+                <Card sx={{ maxWidth: 400, margin: '20px', padding: '1rem' }}>
+                    <h2 style={{ width: 'fit-content', margin: 'auto' }}>{totalPurchasedProducts}</h2>
+                </Card>
             </Box>
 
             {/* Region 2 */}

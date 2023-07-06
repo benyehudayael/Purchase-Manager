@@ -30,7 +30,7 @@ const PurchasedPage = () => {
 
     return (
         <div>
-            <h1>Purchased Page</h1>
+            <h1>Purchases Overview</h1>
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                 <Autocomplete
                     options={products}
