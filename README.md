@@ -7,7 +7,7 @@ This is a web application built with React for managing a store's data including
 To run the project locally, follow these steps:
 
 1. Clone the repository to your local machine:
-git clone https://github.com/your-username/your-repo.git
+`git clone https://github.com/your-username/your-repo.git`
 
 2. Install the necessary dependencies using the package manager of your choice (e.g., npm or yarn):
    npm install
