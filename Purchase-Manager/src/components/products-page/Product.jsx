@@ -51,7 +51,7 @@ const Product = ({ product }) => {
     };
 
     return (
-        <Card sx={{ maxWidth: 400, marginBottom: '20px' }}>
+        <Card sx={{ maxWidth: 400, margin: '20px' }}>
             <CardContent>
                 <Typography variant="h6" component="div">
                     <Link to={`/edit-product/${id}`}>{name}</Link>

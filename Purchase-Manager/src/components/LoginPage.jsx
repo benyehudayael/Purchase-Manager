@@ -17,6 +17,7 @@ const LoginPage = () => {
         try {
             const { token, role } = await login(email, password);
             localStorage.setItem('token', token);
+            localStorage.setItem('userRole', role);
             dispatch({ type: 'SET_ROLE', payload: role });
             navigate('/');
         } catch (error) {

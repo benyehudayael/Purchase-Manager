@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link, useParams, useNavigate } from 'react-router-dom';
-import { TextField, Button, Typography, Box } from '@mui/material';
+import { Typography, Box, TextField, Button } from '@mui/material';
 import { deleteProduct } from '../../actions/productsActions';
 import { updateProduct } from '../../actions/productsActions';
 import { removePurchasesByProductId } from '../../actions/purchasesActions';
@@ -59,27 +59,23 @@ const EditProductPage = () => {
     };
 
     return (
-        <div>
-            <div>
-                <Typography variant="h6">Edit Product: {product.name}</Typography>
-                <Box component="form" onSubmit={handleUpdateProduct} sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                    <TextField label="Name" value={productName} onChange={handleProductNameChange} />
-                    <TextField label="Price" type="number" value={productPrice} onChange={handleProductPriceChange} />
-                    <TextField label="Quantity" type="number" value={productQuantity} onChange={handleProductQuantityChange} />
-                    <Button variant="contained" type="submit">Update Product</Button>
-                </Box>
-                <Button variant="contained" color="error" onClick={handleDeleteProduct}>Delete Product</Button>
-            </div>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: '16px', padding: '16px' }}>
+            <Typography variant="h6">Edit Product: {product.name}</Typography>
+            <Box component="form" onSubmit={handleUpdateProduct} sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                <TextField label="Name" value={productName} onChange={handleProductNameChange} />
+                <TextField label="Price" type="number" value={productPrice} onChange={handleProductPriceChange} />
+                <TextField label="Quantity" type="number" value={productQuantity} onChange={handleProductQuantityChange} />
+                <Button variant="contained" type="submit">Update Product</Button>
+            </Box>
+            <Button variant="contained" color="error" onClick={handleDeleteProduct}>Delete Product</Button>
 
-            <div>
-                <Typography variant="subtitle1" mt={3}>Customers who bought this product:</Typography>
-                {productCustomers.length > 0 && productCustomers.map((customer) => (
-                    <Typography variant="body1" key={customer?.id}>
-                        <Link to={`/edit-customer/${customer?.id}`}>{customer?.firstName} {customer?.lastName}</Link>
-                    </Typography>
-                ))}
-            </div>
-        </div>
+            <Typography variant="subtitle1" mt={3}>Customers who bought this product:</Typography>
+            {productCustomers.length > 0 && productCustomers.map((customer) => (
+                <Typography variant="body1" key={customer?.id}>
+                    <Link to={`/edit-customer/${customer?.id}`}>{customer?.firstName} {customer?.lastName}</Link>
+                </Typography>
+            ))}
+        </Box>
     );
 };
 

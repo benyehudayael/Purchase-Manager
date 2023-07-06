@@ -54,15 +54,15 @@ const EditCustomerPage = () => {
     };
 
     const handleDeleteCustomer = () => {
-        dispatch(deleteCustomer(id));
-        dispatch(removePurchasesByCustomerId(id));
+        dispatch({ type: 'DELETE_CUSTOMER', payload: id });
+        dispatch({ type: 'REMOVE_PURCHASES_BY_CUSTOMER_ID', payload: id });
         alert('Customer successfully deleted');
         navigate('/products');
     };
 
     return (
-        <>
-            <div>
+        <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+            <div style={{ width: '329px', height: '410px', justifyContent: 'space-around', display: 'flex', flexDirection: 'column' }}>
                 <Typography variant="h6">Edit Customer: {customer.firstName} {customer.lastName}</Typography>
                 <Box component="form" onSubmit={handleUpdateCustomer} sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                     <TextField label="First Name" value={customerFirstName} onChange={handleCustomerFirstNameChange} />
@@ -82,7 +82,7 @@ const EditCustomerPage = () => {
                     ))}
                 </List>
             </div>
-        </>
+        </div>
     );
 };
 

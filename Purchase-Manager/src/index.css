@@ -13,11 +13,15 @@
   -webkit-text-size-adjust: 100%;
 
   width: 100%;
+  height: 100%;
 
 }
 
+.root {
+  height: 100%;
+}
+
 form {
-  height: 170px;
   width: 329px;
   display: flex;
   flex-direction: column;
@@ -54,6 +58,7 @@ a:hover {
 body {
   margin: 0;
   width: 100%;
+  height: 100%;
 }
 
 h1 {

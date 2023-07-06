@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import { Container } from '@mui/material';
 import MenuPage from './components/menu-page/MenuPage';
@@ -56,8 +56,9 @@ const App = () => {
     loadInitialDataFromFirebase();
   }, []);
   const isAdmin = useMemo(() => {
-    return userRole === 'admin';
+    return userRole == "admin";
   }, [userRole]);
+  console.log(isAdmin, userRole)
 
   useEffect(() => {
     var userIsAuthenticated = isAuthenticated();
@@ -66,20 +67,29 @@ const App = () => {
     }
   }, [navigate]);
 
+  useEffect(() => {
+    const storedUserRole = localStorage.getItem('userRole');
+    dispatch({ type: 'SET_ROLE', payload: storedUserRole });
+  }, []);
+
+  const pageStyle = {
+    height: '100%',
+  };
+
   return (
-    <Container>
+    <Container style={pageStyle}>
       <Routes>
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/" element={<MenuPage />} />
-        <Route path="/products" element={<ProductsPage />} />
+        <Route path="/login" element={<LoginPage style={pageStyle} />} />
+        <Route path="/" element={<MenuPage style={pageStyle} />} />
+        <Route path="/products" element={<ProductsPage style={pageStyle} />} />
         {isAdmin && (
           <>
-            <Route path="/edit-product/:productId" element={<EditProductPage />} />
-            <Route path="/edit-customer/:customerId" element={<EditCustomerPage />} />
+            <Route path="/edit-product/:productId" element={<EditProductPage style={pageStyle} />} />
+            <Route path="/edit-customer/:customerId" element={<EditCustomerPage style={pageStyle} />} />
           </>
         )}
-        <Route path="/customers" element={<CustomersPage />} />
-        <Route path="/purchases" element={<PurchasedPage />} />
+        <Route path="/customers" element={<CustomersPage style={pageStyle} />} />
+        <Route path="/purchases" element={<PurchasedPage style={pageStyle} />} />
       </Routes>
     </Container>
   );

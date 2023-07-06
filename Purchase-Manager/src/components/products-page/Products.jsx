@@ -18,7 +18,10 @@ const ProductsPage = () => {
         <Box sx={{ display: 'flex', justifyContent: 'space-around' }}>
             {/* Region 1 */}
             <Box>
-                <h2>Total Purchased Products: {totalPurchasedProducts}</h2>
+                <h2>Total Purchased Products:</h2>
+                <Box>
+                    <h2>{totalPurchasedProducts}</h2>
+                </Box>
             </Box>
 
             {/* Region 2 */}

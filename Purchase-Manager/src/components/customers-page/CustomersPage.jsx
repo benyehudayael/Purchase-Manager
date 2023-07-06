@@ -51,7 +51,7 @@ const CustomersPage = () => {
 
     return (
         <>
-            <Typography variant="h1">Customers Page</Typography>
+            <Typography variant="h3">Customers</Typography>
             <div style={{ display: 'flex', justifyContent: 'space-around' }}>
                 <div className="region1">
                     <PurchasesTable purchases={purchases} />
