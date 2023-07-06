@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { Box } from '@mui/material';
 import Product from './Product';
 
 const ProductsPage = () => {
@@ -14,19 +15,19 @@ const ProductsPage = () => {
     }, [products]);
 
     return (
-        <div style={{ display: "flex", justifyContent: "space-around" }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-around' }}>
             {/* Region 1 */}
-            <div>
+            <Box>
                 <h2>Total Purchased Products: {totalPurchasedProducts}</h2>
-            </div>
+            </Box>
 
             {/* Region 2 */}
-            <div>
-                {products.map((product) => (
+            <Box>
+                {products.map(product => (
                     <Product key={product.id} product={product} />
                 ))}
-            </div>
-        </div>
+            </Box>
+        </Box>
     );
 };
 

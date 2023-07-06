@@ -84,10 +84,30 @@ const purchasesReducer = (state = [], action) => {
     }
 };
 
+const usersReducer = (state = [], action) => {
+    switch (action.type) {
+        case 'SET_USERS':
+            return action.payload;
+        default:
+            return state;
+    }
+};
+
+const userRoleReducer = (state = null, action) => {
+    switch (action.type) {
+        case 'SET_ROLE':
+            return action.payload;
+        default:
+            return state;
+    }
+};
+
 const rootReducer = combineReducers({
     products: productsReducer,
     customers: customersReducer,
-    purchases: purchasesReducer
+    purchases: purchasesReducer,
+    users: usersReducer,
+    userRole: userRoleReducer,
 });
 
 export default rootReducer;

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { Card, CardContent, Typography, Button, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 
 const CustomerPurchase = ({ customer, handleSave }) => {
     const { id, firstName, lastName, city, purchasedDate } = customer;
@@ -12,7 +13,7 @@ const CustomerPurchase = ({ customer, handleSave }) => {
     const handleAddClick = () => {
         setIsAddingProduct(!isAddingProduct);
     };
-    const handleLoacalSave = () => {
+    const handleLocalSave = () => {
         var product = products.find((product) => product.id === parseInt(selectedProduct, 10))
         handleSave(id, product);
         setSelectedProduct('');
@@ -20,28 +21,41 @@ const CustomerPurchase = ({ customer, handleSave }) => {
     }
 
     return (
-        <div key={id}>
-            <p>
-                <Link to={`/edit-customer/${id}`}>
-                    {firstName} {lastName}
-                </Link>
-            </p>
-            <p>Purchased Date: {purchasedDate}</p>
-            <button onClick={handleAddClick}>{isAddingProduct ? 'Cancel' : 'Add'}</button>
-            {isAddingProduct && (
-                <div>
-                    <select value={selectedProduct} onChange={(e) => setSelectedProduct(e.target.value)}>
-                        <option value="">Select a product</option>
-                        {products.map((product) => (
-                            <option key={product.id} value={product.id}>
-                                {product.name}
-                            </option>
-                        ))}
-                    </select>
-                    <button onClick={() => handleLoacalSave()}>Save</button>
-                </div>
-            )}
-        </div>
+        <Card className='card' sx={{ marginBottom: '20px' }}>
+            <CardContent>
+                <Typography variant="h6" component="div">
+                    <Link to={`/edit-customer/${id}`}>
+                        {firstName} {lastName}
+                    </Link>
+                </Typography>
+                <Typography variant="body1" gutterBottom>
+                    Purchased Date: {purchasedDate}
+                </Typography>
+                <Button variant="contained" onClick={handleAddClick}>
+                    {isAddingProduct ? 'Cancel' : 'Add'}
+                </Button>
+                {isAddingProduct && (
+                    <div style={{ marginTop: '10px' }}>
+                        <FormControl sx={{ minWidth: 200 }}>
+                            <InputLabel>Select a product</InputLabel>
+                            <Select
+                                value={selectedProduct}
+                                onChange={(e) => setSelectedProduct(e.target.value)}
+                            >
+                                {products.map((product) => (
+                                    <MenuItem key={product.id} value={product.id}>
+                                        {product.name}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                        <Button variant="contained" onClick={handleLocalSave} style={{ marginLeft: '10px' }}>
+                            Save
+                        </Button>
+                    </div>
+                )}
+            </CardContent>
+        </Card>
     );
 };
 

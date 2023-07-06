@@ -3,7 +3,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateCustomer, deleteCustomer } from '../../actions/customersActions';
 import { removePurchasesByCustomerId } from '../../actions/purchasesActions';
-
+import { TextField, Button, Typography, Box, List, ListItem, ListItemText } from '@mui/material';
 
 const EditCustomerPage = () => {
     const { customerId: id } = useParams();
@@ -63,32 +63,24 @@ const EditCustomerPage = () => {
     return (
         <>
             <div>
-                <h2>Edit Customer: {customer.firstName} {customer.lastName}</h2>
-                <form onSubmit={handleUpdateCustomer}>
-                    <label>
-                        First Name:
-                        <input type="text" value={customerFirstName} onChange={handleCustomerFirstNameChange} />
-                    </label>
-                    <label>
-                        Last Name:
-                        <input type="text" value={customerLastName} onChange={handleCustomerLastNameChange} />
-                    </label>
-                    <label>
-                        City:
-                        <input type="text" value={customerCity} onChange={handleCustomerCityChange} />
-                    </label>
-                    <button type="submit">Update Customer</button>
-                </form>
-                <button onClick={handleDeleteCustomer}>Delete Customer</button>
+                <Typography variant="h6">Edit Customer: {customer.firstName} {customer.lastName}</Typography>
+                <Box component="form" onSubmit={handleUpdateCustomer} sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                    <TextField label="First Name" value={customerFirstName} onChange={handleCustomerFirstNameChange} />
+                    <TextField label="Last Name" value={customerLastName} onChange={handleCustomerLastNameChange} />
+                    <TextField label="City" value={customerCity} onChange={handleCustomerCityChange} />
+                    <Button variant="contained" type="submit">Update Customer</Button>
+                </Box>
+                <Button variant="contained" color="error" onClick={handleDeleteCustomer}>Delete Customer</Button>
             </div>
             <div>
-                <ul>
+                <Typography variant="subtitle1" mt={3}>Products purchased by this customer:</Typography>
+                <List>
                     {productsCustomer.map((product, index) => (
-                        <li key={index}>
-                            <Link to={`/edit-product/${product.id}`}>{product.name}</Link>
-                        </li>
+                        <ListItem key={index} disablePadding>
+                            <ListItemText primary={<Link to={`/edit-product/${product.id}`}>{product.name}</Link>} />
+                        </ListItem>
                     ))}
-                </ul>
+                </List>
             </div>
         </>
     );

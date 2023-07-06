@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { Card, CardContent, Typography, Button } from '@mui/material';
 import CustomerPurchase from './CustomerPurchase';
 import { useDispatch, useSelector } from 'react-redux';
 import { addPurchase } from '../../actions/purchasesActions';
@@ -50,21 +51,29 @@ const Product = ({ product }) => {
     };
 
     return (
-        <div>
-            <h3>
-                <Link to={`/edit-product/${id}`}>{name}</Link>
-            </h3>
-            <p>Price: {price}</p>
-            <p>Quantity: {quantity}</p>
-            <h3>Customers who bought this product:</h3>
-            {filteredCustomers.map((customer) => (
-                <CustomerPurchase
-                    key={customer?.id}
-                    customer={customer}
-                    handleSave={handleSave}
-                />
-            ))}
-        </div>
+        <Card sx={{ maxWidth: 400, marginBottom: '20px' }}>
+            <CardContent>
+                <Typography variant="h6" component="div">
+                    <Link to={`/edit-product/${id}`}>{name}</Link>
+                </Typography>
+                <Typography variant="body1" gutterBottom>
+                    Price: {price}
+                </Typography>
+                <Typography variant="body1" gutterBottom>
+                    Quantity: {quantity}
+                </Typography>
+                <Typography variant="h6" component="div">
+                    Customers who bought this product:
+                </Typography>
+                {filteredCustomers.map((customer) => (
+                    <CustomerPurchase
+                        key={customer?.id}
+                        customer={customer}
+                        handleSave={handleSave}
+                    />
+                ))}
+            </CardContent>
+        </Card>
     );
 };
 

@@ -5,13 +5,16 @@ import App from './App.jsx'
 import './index.css'
 import appReducer from './reducers/index.js'
 import { legacy_createStore as createStore } from 'redux';
+import { BrowserRouter as Router } from 'react-router-dom';
 
 const appStore = createStore(appReducer)
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <Provider store={appStore}>
     <React.StrictMode>
-      <App />
+      <Router>
+        <App />
+      </Router>
     </React.StrictMode>
   </Provider>,
 )

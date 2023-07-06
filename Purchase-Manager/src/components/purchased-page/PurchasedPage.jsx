@@ -1,76 +1,68 @@
 import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Button, TextField, Grid, Box } from '@material-ui/core';
-import Select from 'react-select';
+import { useSelector } from 'react-redux';
+import { Autocomplete, TextField, Button } from '@mui/material';
+import PurchasesTable from '../PurchasesTable';
+import { initializeUseSelector } from 'react-redux/es/hooks/useSelector';
 
 const PurchasedPage = () => {
-    const [selectedProduct, setSelectedProduct] = useState('');
-    const [selectedCustomer, setSelectedCustomer] = useState('');
+    const [selectedProduct, setSelectedProduct] = useState(null);
+    const [selectedCustomer, setSelectedCustomer] = useState(null);
     const [selectedDate, setSelectedDate] = useState('');
 
-    const dispatch = useDispatch();
-    const customers = useSelector(state => state.customers);
     const products = useSelector(state => state.products);
+    const customers = useSelector(state => state.customers);
+    const purchases = useSelector(state => state.purchases);
+    const [filteredPurchases, setFilteredPurchases] = useState([])
 
     const handleSearch = () => {
-        // Implement your search logic here
+        setFilteredPurchases([]);
+
+        const filteredPurchases = purchases.filter(purchase => {
+            const customerMatch = !selectedCustomer || purchase.customerID == selectedCustomer.id;
+            const productMatch = !selectedProduct || purchase.productID == selectedProduct.id;
+            const dateMatch = !selectedDate || purchase.date == selectedDate;
+            return customerMatch && productMatch && dateMatch;
+        });
+
+        setFilteredPurchases(filteredPurchases);
+        console.log(filteredPurchases);
     };
-
-    const productOptions = products.map(product => ({
-        value: product.id,
-        label: product.name
-    }));
-
-    const customerOptions = customers.map(customer => ({
-        value: customer.id,
-        label: `${customer.firstName} ${customer.lastName}`
-    }));
 
     return (
         <div>
             <h1>Purchased Page</h1>
-            <Grid container spacing={2}>
-                <Grid item xs={12} sm={6} md={4}>
-                    <Box mt={2}>
-                        <Select
-                            value={selectedProduct}
-                            onChange={option => setSelectedProduct(option.value)}
-                            options={productOptions}
-                            placeholder="Select Product"
-                        />
-                    </Box>
-                </Grid>
-                <Grid item xs={12} sm={6} md={4}>
-                    <Box mt={2}>
-                        <Select
-                            value={selectedCustomer}
-                            onChange={option => setSelectedCustomer(option.value)}
-                            options={customerOptions}
-                            placeholder="Select Customer"
-                        />
-                    </Box>
-                </Grid>
-                <Grid item xs={12} sm={6} md={4}>
-                    <Box mt={2}>
-                        <TextField
-                            label="Date"
-                            type="date"
-                            value={selectedDate}
-                            onChange={e => setSelectedDate(e.target.value)}
-                            InputLabelProps={{
-                                shrink: true
-                            }}
-                        />
-                    </Box>
-                </Grid>
-                <Grid item xs={12}>
-                    <Box mt={2}>
-                        <Button variant="contained" color="primary" onClick={handleSearch}>
-                            Search
-                        </Button>
-                    </Box>
-                </Grid>
-            </Grid>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                <Autocomplete
+                    options={products}
+                    getOptionLabel={product => product.name || ''}
+                    value={selectedProduct}
+                    onChange={(event, newValue) => setSelectedProduct(newValue)}
+                    renderInput={params => (
+                        <TextField {...params} label="Select Product" variant="outlined" />
+                    )}
+                />
+                <Autocomplete
+                    options={customers}
+                    getOptionLabel={customer => `${customer.firstName} ${customer.lastName}` || ''}
+                    value={selectedCustomer}
+                    onChange={(event, newValue) => setSelectedCustomer(newValue)}
+                    renderInput={params => (
+                        <TextField {...params} label="Select Customer" variant="outlined" />
+                    )}
+                />
+                <TextField
+                    label="Date"
+                    type="date"
+                    variant="outlined"
+                    value={selectedDate}
+                    onChange={event => setSelectedDate(event.target.value)}
+                    InputLabelProps={{ shrink: true }}
+                />
+                <Button variant="contained" onClick={handleSearch}>Search</Button>
+            </div>
+            {filteredPurchases.length > 0 && (
+                <PurchasesTable purchases={filteredPurchases} />
+            )}
         </div>
     );
 };

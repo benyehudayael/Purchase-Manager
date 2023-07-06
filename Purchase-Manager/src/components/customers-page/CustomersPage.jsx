@@ -1,7 +1,22 @@
 import React, { useState } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { generateUniqueId } from '../../helper'
+import PurchasesTable from '../PurchasesTable';
+import { generateUniqueId } from '../../helper';
+import {
+    Button,
+    Table,
+    TableHead,
+    TableBody,
+    TableRow,
+    TableCell,
+    Select,
+    MenuItem,
+    FormControl,
+    InputLabel,
+    TextField,
+    Typography,
+} from '@mui/material';
 
 const CustomersPage = () => {
     const [selectedProduct, setSelectedProduct] = useState('');
@@ -36,69 +51,55 @@ const CustomersPage = () => {
 
     return (
         <>
-            <h1>Customers Page</h1>
-            <div style={{ display: "flex", justifyContent: "space-around" }}>
+            <Typography variant="h1">Customers Page</Typography>
+            <div style={{ display: 'flex', justifyContent: 'space-around' }}>
                 <div className="region1">
-                    <h2>Region 1</h2>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Customer Name</th>
-                                <th>Product Name</th>
-                                <th>Purchased Date</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {purchases.map(purchase => {
-                                const customer = customers.find(cust => cust.id == purchase.customerID);
-                                const product = products.find(prod => prod.id == purchase.productID);
-                                return (
-                                    <tr key={purchase?.id}>
-                                        <td>{customer && (<Link to={`/edit-customer/${customer.id}`}>{customer.firstName}</Link>)}</td>
-                                        <td>
-                                            {product && (<Link to={`/edit-product/${product.id}`}>{product.name}</Link>)}
-                                        </td>
-                                        <td>{purchase.date}</td>
-                                    </tr>
-                                );
-                            })}
-                        </tbody>
-                    </table>
+                    <PurchasesTable purchases={purchases} />
                 </div>
                 <div className="region2">
-                    <button onClick={() => setIsFormOpen(true)}>Buy Product</button>
+                    <Button onClick={() => setIsFormOpen(true)}>Buy Product</Button>
                     {isFormOpen && (
                         <form>
-                            <select
-                                value={selectedProduct}
-                                onChange={(e) => setSelectedProduct(e.target.value)}
-                            >
-                                <option value="">Select Product</option>
-                                {products.map((product) => (
-                                    <option key={product.id} value={product.id}>
-                                        {product.name}
-                                    </option>
-                                ))}
-                            </select>
+                            <FormControl>
+                                <InputLabel>Select Product</InputLabel>
+                                <Select
+                                    value={selectedProduct}
+                                    onChange={e => setSelectedProduct(e.target.value)}
+                                >
+                                    <MenuItem value="">
+                                        <em>None</em>
+                                    </MenuItem>
+                                    {products.map(product => (
+                                        <MenuItem key={product.id} value={product.id}>
+                                            {product.name}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
 
-                            <select
-                                value={selectedCustomer}
-                                onChange={(e) => setSelectedCustomer(e.target.value)}
-                            >
-                                <option value="">Select Customer</option>
-                                {customers.map((customer) => (
-                                    <option key={customer.id} value={customer.id}>
-                                        {customer.firstName} {customer.lastName}
-                                    </option>
-                                ))}
-                            </select>
+                            <FormControl>
+                                <InputLabel>Select Customer</InputLabel>
+                                <Select
+                                    value={selectedCustomer}
+                                    onChange={e => setSelectedCustomer(e.target.value)}
+                                >
+                                    <MenuItem value="">
+                                        <em>None</em>
+                                    </MenuItem>
+                                    {customers.map(customer => (
+                                        <MenuItem key={customer.id} value={customer.id}>
+                                            {customer.firstName} {customer.lastName}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
 
-                            <button type="button" onClick={handleBuyProduct}>
+                            <Button variant="contained" onClick={handleBuyProduct}>
                                 Buy
-                            </button>
-                            <button type="button" onClick={handleCancel}>
+                            </Button>
+                            <Button variant="contained" onClick={handleCancel}>
                                 Cancel
-                            </button>
+                            </Button>
                         </form>
                     )}
                 </div>
