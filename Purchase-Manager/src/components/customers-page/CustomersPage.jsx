@@ -1,22 +1,10 @@
-import React, { useState } from 'react';
-import { Link, useParams, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Button, Select, MenuItem, FormControl, InputLabel, Typography } from '@mui/material';
+
 import PurchasesTable from '../PurchasesTable';
 import { generateUniqueId } from '../../helper';
-import {
-    Button,
-    Table,
-    TableHead,
-    TableBody,
-    TableRow,
-    TableCell,
-    Select,
-    MenuItem,
-    FormControl,
-    InputLabel,
-    TextField,
-    Typography,
-} from '@mui/material';
+
 
 const CustomersPage = () => {
     const [selectedProduct, setSelectedProduct] = useState('');
@@ -26,6 +14,8 @@ const CustomersPage = () => {
     const customers = useSelector(state => state.customers);
     const products = useSelector(state => state.products);
     const purchases = useSelector(state => state.purchases);
+    const [isPurchaseSuccess, setPurchaseSuccess] = useState(false);
+
 
     const handleBuyProduct = () => {
         const newPurchaseId = generateUniqueId();
@@ -38,9 +28,10 @@ const CustomersPage = () => {
         };
 
         dispatch({ type: 'ADD_PURCHASE', payload: newPurchase });
-
         setSelectedProduct('');
         setSelectedCustomer('');
+        setIsFormOpen(false);
+        setPurchaseSuccess(true);
     };
 
     const handleCancel = () => {
@@ -48,6 +39,14 @@ const CustomersPage = () => {
         setSelectedProduct('');
         setSelectedCustomer('');
     };
+
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            setPurchaseSuccess(false);
+        }, 3000);
+
+        return () => clearTimeout(timeout);
+    }, [isPurchaseSuccess]);
 
     return (
         <>
@@ -95,6 +94,11 @@ const CustomersPage = () => {
                                 Cancel
                             </Button>
                         </form>
+                    )}
+                    {isPurchaseSuccess && (
+                        <Typography variant="body1" style={{ color: 'green' }}>
+                            Purchase successful!
+                        </Typography>
                     )}
                 </div>
             </div>

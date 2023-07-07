@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { Typography, Box, TextField, Button } from '@mui/material';
-import { deleteProduct } from '../../actions/productsActions';
-import { updateProduct } from '../../actions/productsActions';
+import { deleteProduct, updateProduct } from '../../actions/productsActions';
 import { removePurchasesByProductId } from '../../actions/purchasesActions';
 
 const EditProductPage = () => {
@@ -13,37 +12,42 @@ const EditProductPage = () => {
     const purchases = useSelector((state) => state.purchases);
     const product = products.find((product) => product.id === parseInt(id, 10));
     const productCustomers = purchases
-        .filter((purchase) => purchase.productID == parseInt(id, 10))
-        .map((purchase) => {
-            const customer = customers.find((customer) => customer.id === purchase.customerID);
-            return customer;
-        })
-        .filter((customer) => customer);
+        .filter(purchase => purchase.productID === parseInt(id, 10))
+        .map(purchase => customers.find(customer => customer.id === purchase.customerID))
+        .filter(customer => customer);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const [productName, setProductName] = useState(product.name);
-    const [productPrice, setProductPrice] = useState(product.price);
-    const [productQuantity, setProductQuantity] = useState(product.quantity);
+    const [productName, setProductName] = useState('');
+    const [productPrice, setProductPrice] = useState(0);
+    const [productQuantity, setProductQuantity] = useState(0);
 
-    const handleProductNameChange = (event) => {
+    useState(() => {
+        if (product) {
+            setProductName(product.name);
+            setProductPrice(product.price);
+            setProductQuantity(product.quantity);
+        }
+    }, [product]);
+
+    const handleProductNameChange = event => {
         setProductName(event.target.value);
     };
 
-    const handleProductPriceChange = (event) => {
+    const handleProductPriceChange = event => {
         setProductPrice(event.target.valueAsNumber);
     };
 
-    const handleProductQuantityChange = (event) => {
+    const handleProductQuantityChange = event => {
         setProductQuantity(event.target.valueAsNumber);
     };
 
-    const handleUpdateProduct = (event) => {
+    const handleUpdateProduct = event => {
         event.preventDefault();
+
         if (!productName || !productPrice || !productQuantity) {
             alert("Please fill in all the required fields");
-        }
-        else {
+        } else {
             const updatedProduct = {
                 id: product.id,
                 name: productName,
@@ -66,7 +70,7 @@ const EditProductPage = () => {
     return (
         <div style={{ display: 'flex', justifyContent: 'space-around' }}>
             <div style={{ width: '329px', height: '410px', justifyContent: 'space-around', display: 'flex', flexDirection: 'column' }}>
-                <Typography variant="h6">Edit Product: {product.name}</Typography>
+                <Typography variant="h6">Edit Product: {product ? product.name : ''}</Typography>
                 <Box component="form" onSubmit={handleUpdateProduct} sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                     <TextField label="Name" value={productName} onChange={handleProductNameChange} />
                     <TextField label="Price" type="number" value={productPrice} onChange={handleProductPriceChange} />
@@ -77,11 +81,15 @@ const EditProductPage = () => {
             </div>
             <div>
                 <Typography variant="subtitle1" mt={3}>Customers who bought this product:</Typography>
-                {productCustomers.length > 0 && productCustomers.map((customer) => (
-                    <Typography variant="body1" key={customer?.id}>
-                        <Link to={`/edit-customer/${customer?.id}`}>{customer?.firstName} {customer?.lastName}</Link>
-                    </Typography>
-                ))}
+                {productCustomers.length > 0 ? (
+                    productCustomers.map(customer => (
+                        <Typography variant="body1" key={customer.id}>
+                            <Link to={`/edit-customer/${customer.id}`}>{`${customer.firstName} ${customer.lastName}`}</Link>
+                        </Typography>
+                    ))
+                ) : (
+                    <Typography variant="body1">No customers have bought this product.</Typography>
+                )}
             </div>
         </div>
     );

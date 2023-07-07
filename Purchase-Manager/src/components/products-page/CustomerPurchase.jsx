@@ -13,14 +13,17 @@ const CustomerPurchase = ({ customer, handleSave }) => {
     const handleAddClick = () => {
         setIsAddingProduct(!isAddingProduct);
     };
+
     const handleLocalSave = () => {
-        var product = products.find((product) => product.id === parseInt(selectedProduct, 10))
-        if (product.quantity > 1) {
+
+        var product = products.find((product) => product.id === parseInt(selectedProduct, 10));
+
+        if (product && product.quantity > 0) {
             handleSave(id, product);
             setSelectedProduct('');
             setIsAddingProduct(false);
         } else {
-            alert('Product is out of stock')
+            alert('Product is out of stock');
         }
     }
 
@@ -53,7 +56,12 @@ const CustomerPurchase = ({ customer, handleSave }) => {
                                 ))}
                             </Select>
                         </FormControl>
-                        <Button variant="contained" onClick={handleLocalSave} style={{ marginLeft: '10px' }}>
+                        <Button
+                            variant="contained"
+                            onClick={handleLocalSave}
+                            style={{ marginLeft: '10px' }}
+                            disabled={!selectedProduct}
+                        >
                             Save
                         </Button>
                     </div>

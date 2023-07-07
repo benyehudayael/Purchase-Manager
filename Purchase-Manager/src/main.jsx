@@ -1,11 +1,12 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import { Provider } from 'react-redux';
-import App from './App.jsx'
-import './index.css'
-import appReducer from './reducers/index.js'
-import { legacy_createStore as createStore } from 'redux';
+import React from 'react';
+import ReactDOM from 'react-dom/client';
 import { BrowserRouter as Router } from 'react-router-dom';
+import { Provider } from 'react-redux';
+import { legacy_createStore as createStore } from 'redux';
+
+import App from './App';
+import appReducer from './reducers/index.js';
+import './index.css';
 
 const appStore = createStore(appReducer)
 

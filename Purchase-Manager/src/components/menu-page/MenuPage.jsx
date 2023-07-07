@@ -1,9 +1,9 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
-import { Link, Navigate } from 'react-router-dom';
-import { Typography, List, ListItem, ListItemText } from '@mui/material';
+import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+import { Typography, List, ListItem, ListItemText } from '@mui/material';
+
 import { logout } from '../../auth';
 
 const MenuPage = () => {
@@ -12,19 +12,15 @@ const MenuPage = () => {
 
     const handleLogout = async () => {
         try {
-            // Perform logout
             await logout();
-
             dispatch({ type: 'SET_ROLE', payload: null });
             navigate('/login');
-            // Other logic after successful logout
         } catch (error) {
-            // Handle logout error
+            alert(error)
         }
     };
     const listItemStyle = {
         height: '25%',
-
     };
 
     const listItemTextStyle = {

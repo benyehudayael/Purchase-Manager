@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { login } from '../auth';
 import { useDispatch } from 'react-redux';
 import { Button, TextField, Typography } from '@mui/material';
+
+import { login } from '../auth';
 
 const LoginPage = () => {
     const [email, setEmail] = useState('');
@@ -28,7 +29,7 @@ const LoginPage = () => {
     return (
         <div className='loginContainer'>
             <Typography variant="h2">Login</Typography>
-            <form onSubmit={handleSubmit}>
+            <form style={{ height: '165px' }} onSubmit={handleSubmit}>
                 <div className='apace-between'>
                     <label>Email:</label>
                     <TextField
@@ -49,7 +50,7 @@ const LoginPage = () => {
                         required
                     />
                 </div>
-                {error && <p>{error}</p>}
+                {error && <Typography variant="body2" color="error">{error}</Typography>}
                 <Button type="submit" variant="contained" color="primary">
                     Login
                 </Button>

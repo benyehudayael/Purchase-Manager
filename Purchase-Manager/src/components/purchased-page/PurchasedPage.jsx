@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { Autocomplete, TextField, Button } from '@mui/material';
+
 import PurchasesTable from '../PurchasesTable';
-import { initializeUseSelector } from 'react-redux/es/hooks/useSelector';
 
 const PurchasedPage = () => {
     const [selectedProduct, setSelectedProduct] = useState(null);
@@ -14,9 +14,7 @@ const PurchasedPage = () => {
     const purchases = useSelector(state => state.purchases);
     const [filteredPurchases, setFilteredPurchases] = useState([])
 
-    const handleSearch = () => {
-        setFilteredPurchases([]);
-
+    const handleSearch = useCallback(() => {
         const filteredPurchases = purchases.filter(purchase => {
             const customerMatch = !selectedCustomer || purchase.customerID == selectedCustomer.id;
             const productMatch = !selectedProduct || purchase.productID == selectedProduct.id;
@@ -26,7 +24,7 @@ const PurchasedPage = () => {
 
         setFilteredPurchases(filteredPurchases);
         console.log(filteredPurchases);
-    };
+    }, [selectedCustomer, selectedProduct, selectedDate, purchases]);
 
     return (
         <div>

@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { updateCustomer, deleteCustomer } from '../../actions/customersActions';
-import { removePurchasesByCustomerId } from '../../actions/purchasesActions';
 import { TextField, Button, Typography, Box, List, ListItem, ListItemText } from '@mui/material';
+
+import { updateCustomer, deleteCustomer } from '../../actions/customersActions';
+import { removePurchasesByCustomerId } from '../../actions/purchasesActions'
 
 const EditCustomerPage = () => {
     const { customerId: id } = useParams();
@@ -15,38 +16,43 @@ const EditCustomerPage = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const [customerFirstName, setCustomerFirstName] = useState(customer.firstName);
-    const [customerLastName, setCustomerLastName] = useState(customer.lastName);
-    const [customerCity, setCustomerCity] = useState(customer.city);
-
-    const customerPurchases = purchases.filter((purchase) => purchase.customerID == Number(id));
-
-    const productIds = customerPurchases.map((purchase) => purchase.productID);
+    const [customerFirstName, setCustomerFirstName] = useState('');
+    const [customerLastName, setCustomerLastName] = useState('');
+    const [customerCity, setCustomerCity] = useState('');
 
     useEffect(() => {
-        const pC = products.filter((product) => productIds.includes(product.id));
-        setProductsCustomer(pC);
-    }, []);
+        if (customer) {
+            setCustomerFirstName(customer.firstName);
+            setCustomerLastName(customer.lastName);
+            setCustomerCity(customer.city);
+        }
+    }, [customer]);
 
-    const handleCustomerFirstNameChange = (event) => {
+    useEffect(() => {
+        const customerPurchases = purchases.filter(purchase => purchase.customerID === Number(id));
+        const productIds = customerPurchases.map(purchase => purchase.productID);
+        const pC = products.filter(product => productIds.includes(product.id));
+        setProductsCustomer(pC);
+    }, [id, purchases, products]);
+
+    const handleCustomerFirstNameChange = event => {
         setCustomerFirstName(event.target.value);
     };
 
-    const handleCustomerLastNameChange = (event) => {
+    const handleCustomerLastNameChange = event => {
         setCustomerLastName(event.target.value);
     };
 
-    const handleCustomerCityChange = (event) => {
+    const handleCustomerCityChange = event => {
         setCustomerCity(event.target.value);
     };
 
-    const handleUpdateCustomer = (event) => {
+    const handleUpdateCustomer = event => {
         event.preventDefault();
 
         if (!customerFirstName || !customerLastName || !customerCity) {
             alert("Please fill in all the required fields");
-        }
-        else {
+        } else {
             const updatedCustomer = {
                 id: customer.id,
                 firstName: customerFirstName,
@@ -57,12 +63,11 @@ const EditCustomerPage = () => {
             dispatch(updateCustomer(updatedCustomer));
             alert("Awesome! You've successfully updated the customer.")
         }
-
     };
 
     const handleDeleteCustomer = () => {
-        dispatch({ type: 'DELETE_CUSTOMER', payload: id });
-        dispatch({ type: 'REMOVE_PURCHASES_BY_CUSTOMER_ID', payload: id });
+        dispatch(deleteCustomer(id));
+        dispatch(removePurchasesByCustomerId(id));
         alert('Customer successfully deleted');
         navigate('/products');
     };
@@ -70,7 +75,7 @@ const EditCustomerPage = () => {
     return (
         <div style={{ display: 'flex', justifyContent: 'space-around' }}>
             <div style={{ width: '329px', height: '410px', justifyContent: 'space-around', display: 'flex', flexDirection: 'column' }}>
-                <Typography variant="h6">Edit Customer: {customer.firstName} {customer.lastName}</Typography>
+                <Typography variant="h6">Edit Customer: {customer ? `${customer.firstName} ${customer.lastName}` : ''}</Typography>
                 <Box component="form" onSubmit={handleUpdateCustomer} sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                     <TextField label="First Name" value={customerFirstName} onChange={handleCustomerFirstNameChange} />
                     <TextField label="Last Name" value={customerLastName} onChange={handleCustomerLastNameChange} />
@@ -82,8 +87,8 @@ const EditCustomerPage = () => {
             <div>
                 <Typography variant="subtitle1" mt={3}>Products purchased by this customer:</Typography>
                 <List>
-                    {productsCustomer.map((product, index) => (
-                        <ListItem key={index} disablePadding>
+                    {productsCustomer.map(product => (
+                        <ListItem key={product.id} disablePadding>
                             <ListItemText primary={<Link to={`/edit-product/${product.id}`}>{product.name}</Link>} />
                         </ListItem>
                     ))}

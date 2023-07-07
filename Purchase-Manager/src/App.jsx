@@ -1,12 +1,13 @@
 import React, { useEffect, useMemo } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import firebase from './firebase';
 import { Container } from '@mui/material';
+
 import MenuPage from './components/menu-page/MenuPage';
 import ProductsPage from './components/products-page/Products';
 import EditProductPage from './components/edit-product-page/EditProductPage';
-import EditCustomerPage from './components/edit-customer-page/EditCustomerPage'
-import { useDispatch, useSelector } from 'react-redux';
-import firebase from './firebase';
+import EditCustomerPage from './components/edit-customer-page/EditCustomerPage';
 import CustomersPage from './components/customers-page/CustomersPage';
 import PurchasedPage from './components/purchased-page/PurchasedPage';
 import LoginPage from './components/LoginPage';
@@ -55,10 +56,6 @@ const App = () => {
 
     loadInitialDataFromFirebase();
   }, []);
-  const isAdmin = useMemo(() => {
-    return userRole == "admin";
-  }, [userRole]);
-  console.log(isAdmin, userRole)
 
   useEffect(() => {
     var userIsAuthenticated = isAuthenticated();
@@ -82,7 +79,7 @@ const App = () => {
         <Route path="/login" element={<LoginPage style={pageStyle} />} />
         <Route path="/" element={<MenuPage style={pageStyle} />} />
         <Route path="/products" element={<ProductsPage style={pageStyle} />} />
-        {isAdmin && (
+        {userRole === 'admin' && (
           <>
             <Route path="/edit-product/:productId" element={<EditProductPage style={pageStyle} />} />
             <Route path="/edit-customer/:customerId" element={<EditCustomerPage style={pageStyle} />} />

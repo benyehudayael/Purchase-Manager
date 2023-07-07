@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Box } from '@mui/material';
-import { Card, CardContent, Typography, Button } from '@mui/material';
+import { Box, Card, CardContent, Typography } from '@mui/material';
+
 import Product from './Product';
 
 const ProductsPage = () => {
     const products = useSelector((state) => state.products);
     const [totalPurchasedProducts, setTotalPurchasedProducts] = useState(0)
+
     const calculateTotalPurchasedProducts = () => {
         return products.reduce((total, product) => total + product.quantity, 0);
     };
@@ -19,9 +20,9 @@ const ProductsPage = () => {
         <Box sx={{ display: 'flex', justifyContent: 'space-around' }}>
             {/* Region 1 */}
             <Box>
-                <h2>Total Purchased Products:</h2>
+                <Typography variant="h6">Total Purchased Products:</Typography>
                 <Card sx={{ maxWidth: 400, margin: '20px', padding: '1rem' }}>
-                    <h2 style={{ width: 'fit-content', margin: 'auto' }}>{totalPurchasedProducts}</h2>
+                    <Typography variant="h4" align="center">{totalPurchasedProducts}</Typography>
                 </Card>
             </Box>
 

@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { Card, CardContent, Typography, Button } from '@mui/material';
-import CustomerPurchase from './CustomerPurchase';
+import { Card, CardContent, Typography } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
+
+import CustomerPurchase from './CustomerPurchase';
 import { addPurchase } from '../../actions/purchasesActions';
 import { updateProduct } from '../../actions/productsActions';
 
@@ -13,42 +14,45 @@ const Product = ({ product }) => {
     const [filteredCustomers, setFilteredCustomers] = useState([]);
 
     useEffect(() => {
-        const fC = customersWhoBoughtProduct()
-        setFilteredCustomers(fC);
+        setFilteredCustomers(filteredTheCustomers);
     }, [purchases, customers]);
 
-    const customersWhoBoughtProduct = () => {
+    const filteredTheCustomers = useMemo(() => {
         const customerIds = purchases
-            .filter((purchase) => purchase.productID === id)
-            .map((purchase) => purchase.customerID);
+            .filter(purchase => purchase.productID === id)
+            .map(purchase => purchase.customerID);
 
         return customers
-            .filter((customer) => customerIds.includes(customer.id))
-            .map((customer) => {
+            .filter(customer => customerIds.includes(customer.id))
+            .map(customer => {
                 const purchase = purchases.find(
-                    (purchase) => purchase.customerID === customer.id && purchase.productID === id
+                    purchase => purchase.customerID === customer.id && purchase.productID === id
                 );
                 return {
                     ...customer,
                     purchasedDate: purchase ? purchase.date : null
                 };
             });
-    };
+    }, [purchases, customers, id]);
 
     const dispatch = useDispatch();
 
-    const handleSave = (customerId, selectedProduct) => {
-        const currentDate = new Date();
-        const newPurchase = {
-            id: currentDate.toString(),
-            customerID: customerId,
-            productID: selectedProduct.id,
-            date: currentDate.toISOString().slice(0, 10),
-        };
-        const product = { ...selectedProduct, quantity: selectedProduct.quantity - 1 }
-        dispatch(addPurchase(newPurchase));
-        dispatch(updateProduct(product));
-    };
+    const handleSave = useCallback(
+        (customerId, selectedProduct) => {
+            const currentDate = new Date();
+            const newPurchase = {
+                id: currentDate.toString(),
+                customerID: customerId,
+                productID: selectedProduct.id,
+                date: currentDate.toISOString().slice(0, 10),
+            };
+            const updatedProduct = { ...selectedProduct, quantity: selectedProduct.quantity - 1 };
+
+            dispatch(addPurchase(newPurchase));
+            dispatch(updateProduct(updatedProduct));
+        },
+        [dispatch]
+    );
 
     return (
         <Card sx={{ maxWidth: 400, margin: '20px' }}>
