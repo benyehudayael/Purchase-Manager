@@ -17,9 +17,9 @@ const ProductsPage = () => {
     }, [products]);
 
     return (
-        <Box sx={{ display: 'flex', justifyContent: 'space-around' }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-around', marginTop: '25px' }}>
             {/* Region 1 */}
-            <Box>
+            <Box sx={{ marginTop: '1rem' }}>
                 <Typography variant="h6">Total Purchased Products:</Typography>
                 <Card sx={{ maxWidth: 400, margin: '20px', padding: '1rem' }}>
                     <Typography variant="h4" align="center">{totalPurchasedProducts}</Typography>

@@ -11,6 +11,7 @@ import EditCustomerPage from './components/edit-customer-page/EditCustomerPage';
 import CustomersPage from './components/customers-page/CustomersPage';
 import PurchasedPage from './components/purchased-page/PurchasedPage';
 import LoginPage from './components/LoginPage';
+import NoAccess from './components/NoAccess';
 
 
 const App = () => {
@@ -85,6 +86,7 @@ const App = () => {
             <Route path="/edit-customer/:customerId" element={<EditCustomerPage style={pageStyle} />} />
           </>
         )}
+        <Route path="/no-access" element={<NoAccess style={pageStyle} />} />
         <Route path="/customers" element={<CustomersPage style={pageStyle} />} />
         <Route path="/purchases" element={<PurchasedPage style={pageStyle} />} />
       </Routes>
