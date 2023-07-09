@@ -1,3 +1,4 @@
+:sparkles: :love_you_gesture: :heartpulse: :star: :sparkles: :sunny: :cherry_blossom:
 # Store Management Web Application
 
 This is a web application built with React for managing a store's data including customers, products, and purchases. The application utilizes Redux and Firebase for handling data storage and management.
@@ -57,5 +58,10 @@ npm run dev
 - Redux
 - Firebase
 - Material-UI
+  
+### Note:
+
+1. For using the application effectively, you will need to create the necessary collections in your Firebase project: *products*, *customers*, *purchases*, and *userRoles*. It is recommended to set up some predefined data for *products*, *customers*, and *userRoles* to kickstart your store management journey.
+2. User accounts need to be created in Firebase Authentication to grant access to the application. This ensures secure and personalized user experiences within the store management app.
 
 :sparkles: :love_you_gesture: :heartpulse: :star: :sparkles: :sunny: :cherry_blossom:
