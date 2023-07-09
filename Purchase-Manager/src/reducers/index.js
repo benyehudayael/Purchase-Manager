@@ -13,11 +13,35 @@ const productsReducer = (state = [], action) => {
             return [...state, newProduct];
         case 'UPDATE_PRODUCT':
             const updatedProduct = action.payload;
-            db.collection('products').doc(String(updatedProduct.id)).set(updatedProduct);
+            db.collection('products')
+                .where('id', '==', updatedProduct.id)
+                .get()
+                .then((querySnapshot) => {
+                    querySnapshot.forEach((doc) => {
+                        db.collection('products').doc(doc.id).update(updatedProduct);
+                    });
+                })
+                .catch((error) => {
+                    console.error('Error updating product:', error);
+                });
             return state.map(product => (product.id === updatedProduct.id ? updatedProduct : product));
         case 'DELETE_PRODUCT':
             const productId = action.payload;
-            db.collection('products').doc(productId).delete();
+            db.collection('products')
+                .where('id', '==', Number(productId))
+                .get()
+                .then((querySnapshot) => {
+                    querySnapshot.forEach((doc) => {
+                        doc.ref.delete().then(() => {
+                            console.log('Product successfully deleted!');
+                            // Handle any additional actions or dispatches
+                        });
+                    });
+                })
+                .catch((error) => {
+                    console.error('Error deleting product:', error);
+                    // Handle error scenarios
+                });
             return state.filter(product => product.id !== Number(productId));
         default:
             return state;
@@ -34,11 +58,26 @@ const customersReducer = (state = [], action) => {
             return [...state, newCustomer];
         case 'UPDATE_CUSTOMER':
             const updatedCustomer = action.payload;
-            db.collection('customers').doc(String(updatedCustomer.id)).set(updatedCustomer);
+            db.collection('customers').where('id', '==', updatedCustomer.id).get()
+                .then((querySnapshot) => {
+                    querySnapshot.forEach((doc) => {
+                        db.collection('customers').doc(doc.id).update(updatedCustomer);
+                    });
+                })
+                .catch((error) => {
+                    console.error('Error updating customer:', error);
+                });
             return state.map(customer => (customer.id === updatedCustomer.id ? updatedCustomer : customer));
         case 'DELETE_CUSTOMER':
             const customerId = action.payload;
-            db.collection('customers').doc(String(customerId)).delete();
+            db.collection('customers').where('id', '==', Number(customerId)).get()
+                .then(snapshot => {
+                    snapshot.forEach(doc => doc.ref.delete());
+                    console.log('DELETE_CUSTOMER succeeded in firebase')
+                })
+                .catch(error => {
+                    console.error('Error DELETE_CUSTOMER:', error);
+                });
             return state.filter(customer => customer.id !== customerId);
         default:
             return state;
@@ -59,9 +98,10 @@ const purchasesReducer = (state = [], action) => {
             return state.filter(purchase => purchase.id !== purchaseId);
         case 'REMOVE_PURCHASES_BY_PRODUCT_ID': {
             const productId = action.payload;
-            db.collection('purchases').where('productID', '==', String(productId)).get()
+            db.collection('purchases').where('productID', '==', Number(productId)).get()
                 .then(snapshot => {
                     snapshot.forEach(doc => doc.ref.delete());
+                    console.log('REMOVE_PURCHASES_BY_PRODUCT_ID succeeded in firebase')
                 })
                 .catch(error => {
                     console.error('Error removing purchases:', error);
@@ -70,9 +110,10 @@ const purchasesReducer = (state = [], action) => {
         }
         case 'REMOVE_PURCHASES_BY_CUSTOMER_ID': {
             const customerId = action.payload;
-            db.collection('purchases').where('customerID', '==', String(customerId)).get()
+            db.collection('purchases').where('customerID', '==', Number(customerId)).get()
                 .then(snapshot => {
                     snapshot.forEach(doc => doc.ref.delete());
+                    console.log('REMOVE_PURCHASES_BY_CUSTOMER_ID succeeded in firebase')
                 })
                 .catch(error => {
                     console.error('Error removing purchases:', error);
