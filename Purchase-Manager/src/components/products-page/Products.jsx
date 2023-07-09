@@ -6,15 +6,12 @@ import Product from './Product';
 
 const ProductsPage = () => {
     const products = useSelector((state) => state.products);
+    const purchases = useSelector((state) => state.purchases);
     const [totalPurchasedProducts, setTotalPurchasedProducts] = useState(0)
 
-    const calculateTotalPurchasedProducts = () => {
-        return products.reduce((total, product) => total + product.quantity, 0);
-    };
     useEffect(() => {
-        const total = calculateTotalPurchasedProducts();
-        setTotalPurchasedProducts(total);
-    }, [products]);
+        setTotalPurchasedProducts(purchases.length);
+    }, [purchases]);
 
     return (
         <Box sx={{ display: 'flex', justifyContent: 'space-around', marginTop: '25px' }}>

@@ -55,7 +55,7 @@ const Product = ({ product }) => {
     );
 
     return (
-        <Card sx={{ maxWidth: 400, margin: '20px' }}>
+        <Card sx={{ width: '325px', margin: '20px' }}>
             <CardContent>
                 <Typography variant="h6" component="div">
                     <Link to={`/edit-product/${id}`}>{name}</Link>
@@ -66,7 +66,7 @@ const Product = ({ product }) => {
                 <Typography variant="body1" gutterBottom>
                     Quantity: {quantity}
                 </Typography>
-                <Typography variant="h6" component="div">
+                <Typography variant="body1" component="div" gutterBottom>
                     Customers who bought this product:
                 </Typography>
                 {filteredCustomers.map((customer) => (

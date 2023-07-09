@@ -80,19 +80,25 @@ const EditCustomerPage = () => {
                     <TextField label="First Name" value={customerFirstName} onChange={handleCustomerFirstNameChange} />
                     <TextField label="Last Name" value={customerLastName} onChange={handleCustomerLastNameChange} />
                     <TextField label="City" value={customerCity} onChange={handleCustomerCityChange} />
-                    <Button variant="contained" type="submit">Update Customer</Button>
+                    <Box sx={{ display: 'flex', gap: '16px' }}>
+                        <Button variant="contained" type="submit">Update Customer</Button>
+                        <Button variant="contained" color="error" onClick={handleDeleteCustomer}>Delete Customer</Button>
+                    </Box>
                 </Box>
-                <Button variant="contained" color="error" onClick={handleDeleteCustomer}>Delete Customer</Button>
             </div>
             <div>
                 <Typography variant="subtitle1" mt={3}>Products purchased by this customer:</Typography>
-                <List>
-                    {productsCustomer.map(product => (
-                        <ListItem key={product.id} disablePadding>
-                            <ListItemText primary={<Link to={`/edit-product/${product.id}`}>{product.name}</Link>} />
-                        </ListItem>
-                    ))}
-                </List>
+                {productsCustomer.length > 0 ? (
+                    <List>
+                        {productsCustomer.map(product => (
+                            <ListItem key={product.id} disablePadding>
+                                <ListItemText primary={<Link to={`/edit-product/${product.id}`}>{product.name}</Link>} />
+                            </ListItem>
+                        ))}
+                    </List>
+                ) : (
+                    <Typography variant="body1">No products have bought by this customer.</Typography>
+                )}
             </div>
         </div>
     );

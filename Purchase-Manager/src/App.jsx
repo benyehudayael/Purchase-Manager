@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo } from 'react';
-import { Routes, Route, useNavigate } from 'react-router-dom';
+import React, { useEffect, useMemo, useCallback } from 'react';
+import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import firebase from './firebase';
 import { Container } from '@mui/material';
@@ -19,48 +19,51 @@ const App = () => {
   const dispatch = useDispatch();
   const db = firebase.firestore();
   const navigate = useNavigate();
-  const userRole = useSelector((state) => state.userRole);
+  const location = useLocation();
 
-  const isAuthenticated = () => {
+  const isAuthenticated = useMemo(() => {
     const token = localStorage.getItem('token');
     return token !== null;
-  };
-
-  useEffect(() => {
-    const loadInitialDataFromFirebase = async () => {
-      try {
-        const productsCollection = db.collection('products');
-        const customersCollection = db.collection('customers');
-        const purchasesCollection = db.collection('purchases');
-        const usersCollection = db.collection('users');
-
-        const productsSnapshot = await productsCollection.get();
-        const customersSnapshot = await customersCollection.get();
-        const purchasesSnapshot = await purchasesCollection.get();
-        const usersSnapshot = await usersCollection.get();
-
-        const products = productsSnapshot.docs.map((doc) => doc.data());
-        const customers = customersSnapshot.docs.map((doc) => doc.data());
-        const purchases = purchasesSnapshot.docs.map((doc) => doc.data());
-        const users = usersSnapshot.docs.map((doc) => doc.data());
-
-        dispatch({ type: 'SET_PRODUCTS', payload: products });
-        dispatch({ type: 'SET_CUSTOMERS', payload: customers });
-        dispatch({ type: 'SET_PURCHASES', payload: purchases });
-        dispatch({ type: 'SET_USERS', payload: users });
-
-        console.log('Initial data loaded from Firebase successfully!');
-      } catch (error) {
-        console.error('Error loading initial data from Firebase:', error);
-      }
-    };
-
-    loadInitialDataFromFirebase();
   }, []);
 
+  const loadInitialDataFromFirebase = useCallback(async () => {
+    try {
+      const productsCollection = db.collection('products');
+      const customersCollection = db.collection('customers');
+      const purchasesCollection = db.collection('purchases');
+      const usersCollection = db.collection('users');
+
+      const productsSnapshot = await productsCollection.get();
+      const customersSnapshot = await customersCollection.get();
+      const purchasesSnapshot = await purchasesCollection.get();
+      const usersSnapshot = await usersCollection.get();
+
+      const products = productsSnapshot.docs.map((doc) => doc.data());
+      const customers = customersSnapshot.docs.map((doc) => doc.data());
+      const purchases = purchasesSnapshot.docs.map((doc) => doc.data());
+      const users = usersSnapshot.docs.map((doc) => doc.data());
+
+      dispatch({ type: 'SET_PRODUCTS', payload: products });
+      dispatch({ type: 'SET_CUSTOMERS', payload: customers });
+      dispatch({ type: 'SET_PURCHASES', payload: purchases });
+      dispatch({ type: 'SET_USERS', payload: users });
+
+      console.log('Initial data loaded from Firebase successfully!');
+    } catch (error) {
+      console.error('Error loading initial data from Firebase:', error);
+    }
+  }, [db, dispatch]);
+
   useEffect(() => {
-    var userIsAuthenticated = isAuthenticated();
-    if (!userIsAuthenticated) {
+    const fetchData = async () => {
+      await loadInitialDataFromFirebase();
+    };
+
+    fetchData();
+  }, [loadInitialDataFromFirebase]);
+
+  useEffect(() => {
+    if (!isAuthenticated) {
       navigate('/login');
     }
   }, [navigate]);
@@ -68,11 +71,25 @@ const App = () => {
   useEffect(() => {
     const storedUserRole = localStorage.getItem('userRole');
     dispatch({ type: 'SET_ROLE', payload: storedUserRole });
-  }, []);
+  }, [dispatch]);
 
-  const pageStyle = {
-    height: '100%',
-  };
+  const userRole = useSelector((state) => state.userRole);
+
+  useEffect(() => {
+    if (
+      userRole !== 'admin' &&
+      (location.pathname.includes('/edit-product/') ||
+        location.pathname.includes('/edit-customer/'))
+    ) {
+      navigate('/no-access');
+    }
+  }, [userRole, location.pathname, navigate]);
+
+  const pageStyle = useMemo(() => {
+    return {
+      height: '100%',
+    };
+  }, []);
 
   return (
     <Container style={pageStyle}>

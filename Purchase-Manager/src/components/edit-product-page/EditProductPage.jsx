@@ -75,9 +75,11 @@ const EditProductPage = () => {
                     <TextField label="Name" value={productName} onChange={handleProductNameChange} />
                     <TextField label="Price" type="number" value={productPrice} onChange={handleProductPriceChange} />
                     <TextField label="Quantity" type="number" value={productQuantity} onChange={handleProductQuantityChange} />
-                    <Button variant="contained" type="submit">Update Product</Button>
+                    <Box sx={{ display: 'flex', gap: '16px' }}>
+                        <Button variant="contained" type="submit">Update Product</Button>
+                        <Button variant="contained" color="error" onClick={handleDeleteProduct}>Delete Product</Button>
+                    </Box>
                 </Box>
-                <Button variant="contained" color="error" onClick={handleDeleteProduct}>Delete Product</Button>
             </div>
             <div>
                 <Typography variant="subtitle1" mt={3}>Customers who bought this product:</Typography>
