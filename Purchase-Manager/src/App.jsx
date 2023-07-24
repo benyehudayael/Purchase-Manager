@@ -20,28 +20,30 @@ const App = () => {
   const db = firebase.firestore();
   const navigate = useNavigate();
   const location = useLocation();
+  const userRole = useSelector((state) => state.userRole);
 
-  const isAuthenticated = useMemo(() => {
+  const isAuthenticated = () => {
     const token = localStorage.getItem('token');
     return token !== null;
-  }, []);
+  };
+
+  const fetchCollectionData = async (collectionName) => {
+    try {
+      const collection = db.collection(collectionName);
+      const snapshot = await collection.get();
+      return snapshot.docs.map(doc => doc.data());
+    } catch (error) {
+      console.error(`Error fetching data from ${collectionName}`, error);
+      return [];
+    }
+  };
 
   const loadInitialDataFromFirebase = useCallback(async () => {
     try {
-      const productsCollection = db.collection('products');
-      const customersCollection = db.collection('customers');
-      const purchasesCollection = db.collection('purchases');
-      const usersCollection = db.collection('users');
-
-      const productsSnapshot = await productsCollection.get();
-      const customersSnapshot = await customersCollection.get();
-      const purchasesSnapshot = await purchasesCollection.get();
-      const usersSnapshot = await usersCollection.get();
-
-      const products = productsSnapshot.docs.map((doc) => doc.data());
-      const customers = customersSnapshot.docs.map((doc) => doc.data());
-      const purchases = purchasesSnapshot.docs.map((doc) => doc.data());
-      const users = usersSnapshot.docs.map((doc) => doc.data());
+      const products = await fetchCollectionData('products');
+      const customers = await fetchCollectionData('customers');
+      const purchases = await fetchCollectionData('purchases');
+      const users = await fetchCollectionData('users');
 
       dispatch({ type: 'SET_PRODUCTS', payload: products });
       dispatch({ type: 'SET_CUSTOMERS', payload: customers });
@@ -63,33 +65,26 @@ const App = () => {
   }, [loadInitialDataFromFirebase]);
 
   useEffect(() => {
+    const storedUserRole = localStorage.getItem('userRole');
+    dispatch({ type: 'SET_ROLE', payload: storedUserRole });
+
     if (!isAuthenticated) {
       navigate('/login');
     }
-  }, [navigate]);
 
-  useEffect(() => {
-    const storedUserRole = localStorage.getItem('userRole');
-    dispatch({ type: 'SET_ROLE', payload: storedUserRole });
-  }, [dispatch]);
-
-  const userRole = useSelector((state) => state.userRole);
-
-  useEffect(() => {
-    if (
-      userRole !== 'admin' &&
+    if (storedUserRole !== 'admin' &&
       (location.pathname.includes('/edit-product/') ||
         location.pathname.includes('/edit-customer/'))
     ) {
       navigate('/no-access');
     }
-  }, [userRole, location.pathname, navigate]);
+  }, [navigate, isAuthenticated, location.pathname, dispatch]);
 
-  const pageStyle = useMemo(() => {
+  const pageStyle = () => {
     return {
       height: '100%',
     };
-  }, []);
+  };
 
   return (
     <Container style={pageStyle}>
