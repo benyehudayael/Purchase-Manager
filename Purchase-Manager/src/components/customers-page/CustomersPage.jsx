@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Button, Select, MenuItem, FormControl, InputLabel, Typography } from '@mui/material';
 
 import PurchasesTable from '../PurchasesTable';
+import { addPurchase } from '../../actions/purchasesActions';
+import { setError } from '../../actions/errorActions';
 import { generateUniqueId } from '../../helper';
 
 
@@ -11,33 +13,41 @@ const CustomersPage = () => {
     const [selectedCustomer, setSelectedCustomer] = useState('');
     const [isFormOpen, setIsFormOpen] = useState(false);
     const dispatch = useDispatch();
+
     const customers = useSelector(state => state.customers);
     const products = useSelector(state => state.products);
     const purchases = useSelector(state => state.purchases);
+
     const [isPurchaseSuccess, setPurchaseSuccess] = useState(false);
 
-
-    const handleBuyProduct = () => {
-        const newPurchaseId = generateUniqueId();
-
-        const newPurchase = {
-            id: newPurchaseId,
-            customerID: selectedCustomer,
-            productID: selectedProduct,
-            date: new Date().toISOString().slice(0, 10),
-        };
-
-        dispatch({ type: 'ADD_PURCHASE', payload: newPurchase });
+    const resetSelections = () => {
         setSelectedProduct('');
         setSelectedCustomer('');
-        setIsFormOpen(false);
-        setPurchaseSuccess(true);
+    };
+
+    const handleBuyProduct = () => {
+        try {
+            const newPurchaseId = generateUniqueId();
+
+            const newPurchase = {
+                id: newPurchaseId,
+                customerID: selectedCustomer,
+                productID: selectedProduct,
+                date: new Date().toISOString().slice(0, 10),
+            };
+
+            dispatch(addPurchase(newPurchase));
+            setIsFormOpen(false);
+            resetSelections();
+            setPurchaseSuccess(true);
+        } catch (error) {
+            dispatch(setError(error));
+        }
     };
 
     const handleCancel = () => {
         setIsFormOpen(false);
-        setSelectedProduct('');
-        setSelectedCustomer('');
+        resetSelections();
     };
 
     useEffect(() => {
@@ -102,6 +112,7 @@ const CustomersPage = () => {
                     )}
                 </div>
             </div>
+
         </>
     );
 };

@@ -25,14 +25,22 @@ const PurchasesTable = ({ purchases }) => {
                         return (
                             <TableRow key={purchase.id}>
                                 <TableCell>
-                                    {customer && <Link to={`/edit-customer/${customer.id}`}>
-                                        {`${customer.firstName} ${customer.lastName}`}
-                                    </Link>}
+                                    {customer ? (
+                                        <Link to={`/edit-customer/${customer.id}`}>
+                                            {`${customer.firstName} ${customer.lastName}`}
+                                        </Link>
+                                    ) : (
+                                        "Unknown Customer"
+                                    )}
                                 </TableCell>
                                 <TableCell>
-                                    {product && <Link to={`/edit-product/${product.id}`}>
-                                        {product.name}
-                                    </Link>}
+                                    {product ? (
+                                        <Link to={`/edit-product/${product.id}`}>
+                                            {product.name}
+                                        </Link>
+                                    ) : (
+                                        "Unknown Product"
+                                    )}
                                 </TableCell>
                                 <TableCell>{purchase.date}</TableCell>
                             </TableRow>

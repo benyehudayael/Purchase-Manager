@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { Autocomplete, TextField, Button } from '@mui/material';
 
@@ -16,9 +16,9 @@ const PurchasedPage = () => {
 
     const handleSearch = useCallback(() => {
         const filteredPurchases = purchases.filter(purchase => {
-            const customerMatch = !selectedCustomer || purchase.customerID == selectedCustomer.id;
-            const productMatch = !selectedProduct || purchase.productID == selectedProduct.id;
-            const dateMatch = !selectedDate || purchase.date == selectedDate;
+            const customerMatch = !selectedCustomer || purchase.customerID === selectedCustomer.id;
+            const productMatch = !selectedProduct || purchase.productID === selectedProduct.id;
+            const dateMatch = !selectedDate || purchase.date === selectedDate;
             return customerMatch && productMatch && dateMatch;
         });
 
@@ -58,8 +58,10 @@ const PurchasedPage = () => {
                 />
                 <Button variant="contained" onClick={handleSearch}>Search</Button>
             </div>
-            {filteredPurchases.length > 0 && (
+            {filteredPurchases.length > 0 ? (
                 <PurchasesTable purchases={filteredPurchases} />
+            ) : (
+                <p>No purchases match your criteria.</p>
             )}
         </div>
     );

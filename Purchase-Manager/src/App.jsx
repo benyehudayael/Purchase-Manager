@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import firebase from './firebase';
-import { Container } from '@mui/material';
+import { Container, Typography } from '@mui/material';
 
 import MenuPage from './components/menu-page/MenuPage';
 import ProductsPage from './components/products-page/Products';
@@ -14,18 +14,20 @@ import LoginPage from './components/LoginPage';
 import NoAccess from './components/NoAccess';
 import GuardedRoute from './components/GuardedRoute';
 import ErrorNotification from './components/ErrorNotification';
-import { deleteError, setError } from './actions/errorActions'
+import { deleteError, setError } from './actions/errorActions';
+import { startLoading, stopLoading } from './actions/loadingActions';
 import './App.css';
 
 
 const App = () => {
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const db = firebase.firestore();
 
   const location = useLocation();
+
+  const isLoading = useSelector(state => state.loading);
   const error = useSelector(state => state.error);
 
   const isAuthenticated = () => {
@@ -66,7 +68,9 @@ const App = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      dispatch(startLoading());
       await loadInitialDataFromFirebase();
+      dispatch(stopLoading());
     };
 
     fetchData();
@@ -90,6 +94,7 @@ const App = () => {
 
   return (
     <Container className="fullHeight">
+      {isLoading && <Typography variant="h5">Data is loading...</Typography>}
       {error && <ErrorNotification message={error} onClose={() => dispatch(deleteError())} />}
       <Routes>
         <Route path="/login" element={<LoginPage />} />

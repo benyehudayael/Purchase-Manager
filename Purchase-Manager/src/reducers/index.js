@@ -152,13 +152,25 @@ const errorReducer = (state = null, action) => {
     }
 };
 
+const loadingReducer = (state = false, action) => {
+    switch (action.type) {
+        case 'START_LOADING':
+            return true;
+        case 'STOP_LOADING':
+            return false;
+        default:
+            return state;
+    }
+};
+
 const rootReducer = combineReducers({
     products: productsReducer,
     customers: customersReducer,
     purchases: purchasesReducer,
     users: usersReducer,
     userRole: userRoleReducer,
-    error: errorReducer
+    error: errorReducer,
+    loading: loadingReducer
 });
 
 export default rootReducer;
