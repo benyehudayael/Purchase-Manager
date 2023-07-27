@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useCallback } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import firebase from './firebase';
@@ -12,15 +12,21 @@ import CustomersPage from './components/customers-page/CustomersPage';
 import PurchasedPage from './components/purchased-page/PurchasedPage';
 import LoginPage from './components/LoginPage';
 import NoAccess from './components/NoAccess';
+import GuardedRoute from './components/GuardedRoute';
+import ErrorNotification from './components/ErrorNotification';
+import { deleteError, setError } from './actions/errorActions'
+import './App.css';
 
 
 const App = () => {
 
   const dispatch = useDispatch();
-  const db = firebase.firestore();
   const navigate = useNavigate();
+
+  const db = firebase.firestore();
+
   const location = useLocation();
-  const userRole = useSelector((state) => state.userRole);
+  const error = useSelector(state => state.error);
 
   const isAuthenticated = () => {
     const token = localStorage.getItem('token');
@@ -34,7 +40,7 @@ const App = () => {
       return snapshot.docs.map(doc => doc.data());
     } catch (error) {
       console.error(`Error fetching data from ${collectionName}`, error);
-      return [];
+      throw new Error(`Failed to fetch data from ${collectionName}.`);
     }
   };
 
@@ -53,6 +59,8 @@ const App = () => {
       console.log('Initial data loaded from Firebase successfully!');
     } catch (error) {
       console.error('Error loading initial data from Firebase:', error);
+      const err = 'There was an error loading data. Please try again later.';
+      dispatch(setError(err));
     }
   }, [db, dispatch]);
 
@@ -80,27 +88,26 @@ const App = () => {
     }
   }, [navigate, isAuthenticated, location.pathname, dispatch]);
 
-  const pageStyle = () => {
-    return {
-      height: '100%',
-    };
-  };
-
   return (
-    <Container style={pageStyle}>
+    <Container className="fullHeight">
+      {error && <ErrorNotification message={error} onClose={() => dispatch(deleteError())} />}
       <Routes>
-        <Route path="/login" element={<LoginPage style={pageStyle} />} />
-        <Route path="/" element={<MenuPage style={pageStyle} />} />
-        <Route path="/products" element={<ProductsPage style={pageStyle} />} />
-        {userRole === 'admin' && (
-          <>
-            <Route path="/edit-product/:productId" element={<EditProductPage style={pageStyle} />} />
-            <Route path="/edit-customer/:customerId" element={<EditCustomerPage style={pageStyle} />} />
-          </>
-        )}
-        <Route path="/no-access" element={<NoAccess style={pageStyle} />} />
-        <Route path="/customers" element={<CustomersPage style={pageStyle} />} />
-        <Route path="/purchases" element={<PurchasedPage style={pageStyle} />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/" element={<MenuPage />} />
+        <Route path="/products" element={<ProductsPage />} />
+        {GuardedRoute({
+          path: "/edit-product/:productId",
+          element: <EditProductPage />,
+          roles: ['admin']
+        })}
+        {GuardedRoute({
+          path: "/edit-customer/:customerId",
+          element: <EditCustomerPage />,
+          roles: ['admin']
+        })}
+        <Route path="/no-access" element={<NoAccess />} />
+        <Route path="/customers" element={<CustomersPage />} />
+        <Route path="/purchases" element={<PurchasedPage />} />
       </Routes>
     </Container>
   );

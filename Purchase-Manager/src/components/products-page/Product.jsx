@@ -13,9 +13,7 @@ const Product = ({ product }) => {
     const purchases = useSelector((state) => state.purchases);
     const [filteredCustomers, setFilteredCustomers] = useState([]);
 
-    useEffect(() => {
-        setFilteredCustomers(filteredTheCustomers);
-    }, [purchases, customers]);
+    const dispatch = useDispatch();
 
     const filteredTheCustomers = useMemo(() => {
         const customerIds = purchases
@@ -35,7 +33,9 @@ const Product = ({ product }) => {
             });
     }, [purchases, customers, id]);
 
-    const dispatch = useDispatch();
+    useEffect(() => {
+        setFilteredCustomers(filteredTheCustomers);
+    }, [filteredTheCustomers]);
 
     const handleSave = useCallback(
         (customerId, selectedProduct) => {

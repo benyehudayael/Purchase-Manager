@@ -143,12 +143,22 @@ const userRoleReducer = (state = null, action) => {
     }
 };
 
+const errorReducer = (state = null, action) => {
+    switch (action.type) {
+        case 'SET_ERROR':
+            return action.payload;
+        default:
+            return state;
+    }
+};
+
 const rootReducer = combineReducers({
     products: productsReducer,
     customers: customersReducer,
     purchases: purchasesReducer,
     users: usersReducer,
     userRole: userRoleReducer,
+    error: errorReducer
 });
 
 export default rootReducer;

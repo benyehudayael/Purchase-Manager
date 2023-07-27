@@ -21,7 +21,6 @@ export const login = async (email, password) => {
 };
 
 const getUserRole = async (uid) => {
-
     const db = firebase.firestore();
     try {
         const doc = await db.collection('userRoles').where('uid', '==', uid).get();
@@ -30,7 +29,6 @@ const getUserRole = async (uid) => {
             const d = userRoleDoc.data();
             return d.role;
         } else {
-            // Handle case where user role document does not exist
             return 'unknown';
         }
     } catch (error) {

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Select, MenuItem, FormControl, InputLabel, Typography } from '@mui/material';
 
-import PurchasesTable from '../PurchasesTable copy';
+import PurchasesTable from '../PurchasesTable';
 import { generateUniqueId } from '../../helper';
 
 

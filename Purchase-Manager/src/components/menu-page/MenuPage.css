@@ -1,0 +1,22 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem;
+}
+
+.title {
+    color: #747bff;
+}
+
+.listItem {
+    height: 25% !important;
+}
+
+.listItemText {
+    font-size: 5rem;
+    font-family: -webkit-body;
+    width: fit-content;
+    margin: auto;
+}
+
+.logoutButton {}
