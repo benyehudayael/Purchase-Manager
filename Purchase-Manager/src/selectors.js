@@ -1,21 +1,29 @@
 import { createSelector } from 'reselect';
 
-const getCustomers = (state) => state.customers;
-const getPurchases = (state) => state.purchases;
+const getCustomers = state => state.customers;
+const getPurchases = state => state.purchases;
 
-export const makeGetPurchasesForProduct = () => {
+const makeGetRelatedCustomers = () => {
     return createSelector(
-        [getPurchases],
-        (purchases, productId) => purchases.filter(purchase => purchase.productID === productId)
-    );
-}
+        [getCustomers, getPurchases, (_, productId) => productId],
+        (customers, purchases, productId) => {
+            const customerIds = purchases
+                .filter(purchase => purchase.productID === productId)
+                .map(purchase => purchase.customerID);
 
-export const makeGetCustomersForProduct = () => {
-    return createSelector(
-        [getCustomers, makeGetPurchasesForProduct()],
-        (customers, productPurchases) => {
-            const customerIds = productPurchases.map(purchase => purchase.customerID);
-            return customers.filter(customer => customerIds.includes(customer.id));
+            return customers
+                .filter(customer => customerIds.includes(customer.id))
+                .map(customer => {
+                    const purchase = purchases.find(
+                        purchase => purchase.customerID === customer.id && purchase.productID === productId
+                    );
+                    return {
+                        ...customer,
+                        purchasedDate: purchase ? purchase.date : null
+                    };
+                });
         }
-    );
-}
+    )
+};
+
+export const getRelatedCustomers = makeGetRelatedCustomers();

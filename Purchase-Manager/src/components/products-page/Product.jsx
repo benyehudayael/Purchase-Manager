@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardContent, Typography } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
@@ -7,35 +7,12 @@ import CustomerPurchase from './CustomerPurchase';
 import { addPurchase } from '../../actions/purchasesActions';
 import { updateProduct } from '../../actions/productsActions';
 
-const Product = ({ product }) => {
-    const { id, name, price, quantity } = product;
-    const customers = useSelector((state) => state.customers);
-    const purchases = useSelector((state) => state.purchases);
-    const [filteredCustomers, setFilteredCustomers] = useState([]);
+import { getRelatedCustomers } from '../../selectors';
+const Product = ({ product: { id, name, price, quantity } }) => {
+
+    const relatedCustomers = useSelector(state => getRelatedCustomers(state, id));
 
     const dispatch = useDispatch();
-
-    const filteredTheCustomers = useMemo(() => {
-        const customerIds = purchases
-            .filter(purchase => purchase.productID === id)
-            .map(purchase => purchase.customerID);
-
-        return customers
-            .filter(customer => customerIds.includes(customer.id))
-            .map(customer => {
-                const purchase = purchases.find(
-                    purchase => purchase.customerID === customer.id && purchase.productID === id
-                );
-                return {
-                    ...customer,
-                    purchasedDate: purchase ? purchase.date : null
-                };
-            });
-    }, [purchases, customers, id]);
-
-    useEffect(() => {
-        setFilteredCustomers(filteredTheCustomers);
-    }, [filteredTheCustomers]);
 
     const handleSave = useCallback(
         (customerId, selectedProduct) => {
@@ -66,16 +43,24 @@ const Product = ({ product }) => {
                 <Typography variant="body1" gutterBottom>
                     Quantity: {quantity}
                 </Typography>
-                <Typography variant="body1" component="div" gutterBottom>
-                    Customers who bought this product:
-                </Typography>
-                {filteredCustomers.map((customer) => (
-                    <CustomerPurchase
-                        key={customer?.id}
-                        customer={customer}
-                        handleSave={handleSave}
-                    />
-                ))}
+                {relatedCustomers.length === 0 ? (
+                    <Typography variant="body2" color="textSecondary">
+                        No customers have purchased this product yet.
+                    </Typography>
+                ) : (
+                    <>
+                        <Typography variant="body1" component="div" gutterBottom>
+                            Customers who bought this product:
+                        </Typography>
+                        {relatedCustomers.map((customer) => (
+                            <CustomerPurchase
+                                key={customer?.id}
+                                customer={customer}
+                                handleSave={handleSave}
+                            />
+                        ))}
+                    </>
+                )}
             </CardContent>
         </Card>
     );

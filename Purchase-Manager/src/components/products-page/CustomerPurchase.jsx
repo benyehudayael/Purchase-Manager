@@ -3,19 +3,15 @@ import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Card, CardContent, Typography, Button, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 
-const CustomerPurchase = ({ customer, handleSave }) => {
-    const { id, firstName, lastName, city, purchasedDate } = customer;
+const CustomerPurchase = ({ customer: { id, firstName, lastName, city, purchasedDate }, handleSave }) => {
     const products = useSelector((state) => state.products);
 
     const [selectedProduct, setSelectedProduct] = useState('');
     const [isAddingProduct, setIsAddingProduct] = useState(false);
 
-    const handleAddClick = () => {
-        setIsAddingProduct(!isAddingProduct);
-    };
+    const handleAddClick = () => setIsAddingProduct(prev => !prev);
 
     const handleLocalSave = () => {
-
         var product = products.find((product) => product.id === parseInt(selectedProduct, 10));
 
         if (product && product.quantity > 0) {
