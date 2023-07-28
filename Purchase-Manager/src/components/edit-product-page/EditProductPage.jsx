@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { Typography, Box, TextField, Button } from '@mui/material';
@@ -11,24 +11,26 @@ const EditProductPage = () => {
     const customers = useSelector((state) => state.customers);
     const purchases = useSelector((state) => state.purchases);
     const product = products.find((product) => product.id === parseInt(id, 10));
-    const productCustomers = purchases
-        .filter(purchase => purchase.productID === parseInt(id, 10))
-        .map(purchase => customers.find(customer => customer.id === purchase.customerID))
-        .filter(customer => customer);
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
 
     const [productName, setProductName] = useState('');
     const [productPrice, setProductPrice] = useState(0);
     const [productQuantity, setProductQuantity] = useState(0);
 
-    useState(() => {
+    useEffect(() => {
         if (product) {
             setProductName(product.name);
             setProductPrice(product.price);
             setProductQuantity(product.quantity);
         }
     }, [product]);
+
+    const productCustomers = purchases
+        .filter(purchase => purchase.productID === parseInt(id, 10))
+        .map(purchase => customers.find(customer => customer.id === purchase.customerID))
+        .filter(Boolean);
+
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const handleProductNameChange = event => {
         setProductName(event.target.value);
@@ -45,19 +47,20 @@ const EditProductPage = () => {
     const handleUpdateProduct = event => {
         event.preventDefault();
 
-        if (!productName || !productPrice || !productQuantity) {
+        if (!(productName && productPrice > 0 && productQuantity > 0)) {
             alert("Please fill in all the required fields");
-        } else {
-            const updatedProduct = {
-                id: product.id,
-                name: productName,
-                price: productPrice,
-                quantity: productQuantity,
-            };
-
-            dispatch(updateProduct(updatedProduct));
-            alert("Awesome! You've successfully updated the product.")
+            return;
         }
+
+        const updatedProduct = {
+            id: product.id,
+            name: productName,
+            price: productPrice,
+            quantity: productQuantity,
+        };
+
+        dispatch(updateProduct(updatedProduct));
+        alert("Awesome! You've successfully updated the product.");
     };
 
     const handleDeleteProduct = () => {

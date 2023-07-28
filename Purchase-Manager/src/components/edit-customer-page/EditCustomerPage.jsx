@@ -8,23 +8,25 @@ import { removePurchasesByCustomerId } from '../../actions/purchasesActions'
 
 const EditCustomerPage = () => {
     const { customerId: id } = useParams();
-    const [productsCustomer, setProductsCustomer] = useState([]);
-    const customers = useSelector((state) => state.customers);
-    const products = useSelector((state) => state.products);
-    const purchases = useSelector((state) => state.purchases);
-    const customer = customers.find((customer) => customer.id === parseInt(id, 10));
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const [customerFirstName, setCustomerFirstName] = useState('');
-    const [customerLastName, setCustomerLastName] = useState('');
-    const [customerCity, setCustomerCity] = useState('');
+    const customers = useSelector((state) => state.customers);
+    const products = useSelector((state) => state.products);
+    const purchases = useSelector((state) => state.purchases);
+
+    const customer = customers.find((customer) => customer.id === Number(id));
+    const [formData, setFormData] = useState({
+        firstName: '',
+        lastName: '',
+        city: '',
+    });
+    const [productsCustomer, setProductsCustomer] = useState([]);
 
     useEffect(() => {
         if (customer) {
-            setCustomerFirstName(customer.firstName);
-            setCustomerLastName(customer.lastName);
-            setCustomerCity(customer.city);
+            const { firstName, lastName, city } = customer;
+            setFormData({ firstName, lastName, city });
         }
     }, [customer]);
 
@@ -35,29 +37,24 @@ const EditCustomerPage = () => {
         setProductsCustomer(pC);
     }, [id, purchases, products]);
 
-    const handleCustomerFirstNameChange = event => {
-        setCustomerFirstName(event.target.value);
-    };
-
-    const handleCustomerLastNameChange = event => {
-        setCustomerLastName(event.target.value);
-    };
-
-    const handleCustomerCityChange = event => {
-        setCustomerCity(event.target.value);
+    const handleInputChange = (event) => {
+        const { name, value } = event.target;
+        setFormData((prevData) => ({
+            ...prevData,
+            [name]: value,
+        }));
     };
 
     const handleUpdateCustomer = event => {
         event.preventDefault();
+        const { firstName, lastName, city } = formData;
 
-        if (!customerFirstName || !customerLastName || !customerCity) {
+        if (!firstName || !lastName || !city) {
             alert("Please fill in all the required fields");
         } else {
             const updatedCustomer = {
                 id: customer.id,
-                firstName: customerFirstName,
-                lastName: customerLastName,
-                city: customerCity,
+                ...formData
             };
 
             dispatch(updateCustomer(updatedCustomer));
@@ -77,9 +74,9 @@ const EditCustomerPage = () => {
             <div style={{ width: '329px', height: '410px', justifyContent: 'space-around', display: 'flex', flexDirection: 'column' }}>
                 <Typography variant="h6">Edit Customer: {customer ? `${customer.firstName} ${customer.lastName}` : ''}</Typography>
                 <Box component="form" onSubmit={handleUpdateCustomer} sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                    <TextField label="First Name" value={customerFirstName} onChange={handleCustomerFirstNameChange} />
-                    <TextField label="Last Name" value={customerLastName} onChange={handleCustomerLastNameChange} />
-                    <TextField label="City" value={customerCity} onChange={handleCustomerCityChange} />
+                    <TextField label="First Name" value={formData.firstName} name="firstName" onChange={handleInputChange} />
+                    <TextField label="Last Name" value={formData.lastName} name="lastName" onChange={handleInputChange} />
+                    <TextField label="City" value={formData.city} name="city" onChange={handleInputChange} />
                     <Box sx={{ display: 'flex', gap: '16px' }}>
                         <Button variant="contained" type="submit">Update Customer</Button>
                         <Button variant="contained" color="error" onClick={handleDeleteCustomer}>Delete Customer</Button>
