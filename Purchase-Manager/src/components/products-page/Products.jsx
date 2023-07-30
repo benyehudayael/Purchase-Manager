@@ -13,16 +13,18 @@ const ProductsPage = () => {
     return (
         <Box sx={{ display: 'flex', justifyContent: 'space-around', marginTop: '25px' }}>
             {/* Total amount of purchased products */}
-            <Box sx={{ marginTop: '1rem' }}>
-                <Typography variant="h6">Total Purchased Products:</Typography>
+            <Box>
+                <Typography variant="h6">Total purchased products:</Typography>
                 <Card sx={{ maxWidth: 400, margin: '20px', padding: '1rem' }}>
                     <Typography variant="h4" align="center">{totalPurchasedProducts}</Typography>
                 </Card>
             </Box>
             {/* Products data */}
             <Box>
-                {products.length > 0 ? (
-                    products.map(product => <Product key={product.id} product={product} />)
+                {products.length > 0 ? (<>
+                    <Typography variant="h6">Product-customer overview:</Typography>
+                    {products.map(product => <Product key={product.id} product={product} />)}
+                </>
                 ) : (
                     <Typography variant="h6" align="center">
                         No products available.

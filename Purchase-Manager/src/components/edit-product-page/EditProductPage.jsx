@@ -73,14 +73,14 @@ const EditProductPage = () => {
     return (
         <div style={{ display: 'flex', justifyContent: 'space-around' }}>
             <div style={{ width: '329px', height: '410px', justifyContent: 'space-around', display: 'flex', flexDirection: 'column' }}>
-                <Typography variant="h6">Edit Product: {product ? product.name : ''}</Typography>
+                <Typography variant="h6">Edit Product: <span style={{ color: 'gray' }}>{product ? product.name : ''}</span></Typography>
                 <Box component="form" onSubmit={handleUpdateProduct} sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                     <TextField label="Name" value={productName} onChange={handleProductNameChange} />
                     <TextField label="Price" type="number" value={productPrice} onChange={handleProductPriceChange} />
                     <TextField label="Quantity" type="number" value={productQuantity} onChange={handleProductQuantityChange} />
                     <Box sx={{ display: 'flex', gap: '16px' }}>
-                        <Button variant="contained" type="submit">Update Product</Button>
-                        <Button variant="contained" color="error" onClick={handleDeleteProduct}>Delete Product</Button>
+                        <Button variant="contained" type="submit">Update</Button>
+                        <Button variant="contained" color="error" onClick={handleDeleteProduct}>Delete</Button>
                     </Box>
                 </Box>
             </div>

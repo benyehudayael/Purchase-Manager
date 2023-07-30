@@ -94,7 +94,7 @@ const App = () => {
 
   return (
     <Container className="fullHeight">
-      {isLoading && <Typography variant="h5">Data is loading...</Typography>}
+      {isLoading && <div className="load"></div>}
       {error && <ErrorNotification message={error} onClose={() => dispatch(deleteError())} />}
       <Routes>
         <Route path="/login" element={<LoginPage />} />

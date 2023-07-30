@@ -72,14 +72,16 @@ const EditCustomerPage = () => {
     return (
         <div style={{ display: 'flex', justifyContent: 'space-around' }}>
             <div style={{ width: '329px', height: '410px', justifyContent: 'space-around', display: 'flex', flexDirection: 'column' }}>
-                <Typography variant="h6">Edit Customer: {customer ? `${customer.firstName} ${customer.lastName}` : ''}</Typography>
+                <Typography variant="h6">Edit Customer: <span style={{ color: 'gray' }}>
+                    {customer ? `${customer.firstName} ${customer.lastName}` : ''}
+                </span></Typography>
                 <Box component="form" onSubmit={handleUpdateCustomer} sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                     <TextField label="First Name" value={formData.firstName} name="firstName" onChange={handleInputChange} />
                     <TextField label="Last Name" value={formData.lastName} name="lastName" onChange={handleInputChange} />
                     <TextField label="City" value={formData.city} name="city" onChange={handleInputChange} />
                     <Box sx={{ display: 'flex', gap: '16px' }}>
-                        <Button variant="contained" type="submit">Update Customer</Button>
-                        <Button variant="contained" color="error" onClick={handleDeleteCustomer}>Delete Customer</Button>
+                        <Button variant="contained" type="submit">Update</Button>
+                        <Button variant="contained" color="error" onClick={handleDeleteCustomer}>Delete</Button>
                     </Box>
                 </Box>
             </div>

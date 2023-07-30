@@ -55,7 +55,7 @@ const CustomerPurchase = ({ customer: { id, firstName, lastName, city, purchased
                         <Button
                             variant="contained"
                             onClick={handleLocalSave}
-                            style={{ marginLeft: '10px' }}
+                            style={{ margin: '10px' }}
                             disabled={!selectedProduct}
                         >
                             Save

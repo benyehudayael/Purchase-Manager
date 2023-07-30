@@ -27,9 +27,7 @@ const Product = ({ product: { id, name, price, quantity } }) => {
 
             dispatch(addPurchase(newPurchase));
             dispatch(updateProduct(updatedProduct));
-        },
-        [dispatch]
-    );
+        }, [relatedCustomers]);
 
     return (
         <Card sx={{ width: '325px', margin: '20px' }}>
