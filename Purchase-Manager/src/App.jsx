@@ -16,6 +16,7 @@ import ErrorNotification from './components/ErrorNotification';
 
 import { deleteError } from './actions/errorActions';
 import { loadInitialDataFromFirebase } from './firebaseUtils';
+import { setRole } from './actions/userAction'
 import { startLoading, stopLoading } from './actions/loadingActions';
 import { isAuthenticated } from './auth'
 import './App.css';
@@ -42,7 +43,7 @@ const App = () => {
 
   useEffect(() => {
     const storedUserRole = localStorage.getItem('userRole');
-    dispatch({ type: 'SET_ROLE', payload: storedUserRole });
+    dispatch(setRole(storedUserRole));
 
     if (!isLoggedIn) {
       navigate('/login');

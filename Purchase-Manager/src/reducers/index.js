@@ -34,13 +34,11 @@ const productsReducer = (state = [], action) => {
                     querySnapshot.forEach((doc) => {
                         doc.ref.delete().then(() => {
                             console.log('Product successfully deleted!');
-                            // Handle any additional actions or dispatches
                         });
                     });
                 })
                 .catch((error) => {
                     console.error('Error deleting product:', error);
-                    // Handle error scenarios
                 });
             return state.filter(product => product.id !== Number(productId));
         default:

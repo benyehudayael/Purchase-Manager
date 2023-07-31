@@ -71,6 +71,6 @@ export const logout = async () => {
 //     return false;
 // };
 export const isAuthenticated = () => {
-    const token = localStorage.getItem('token');
+    const token = getTokenFromLocalStorage();
     return token !== null;
 };
