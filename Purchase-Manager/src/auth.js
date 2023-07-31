@@ -2,6 +2,17 @@ import 'firebase/auth';
 import firebase from 'firebase/app';
 import { auth } from './firebase';
 
+const storeTokenInLocalStorage = (token) => {
+    localStorage.setItem('token', token);
+};
+
+const getTokenFromLocalStorage = () => {
+    return localStorage.getItem('token');
+};
+
+const removeTokenFromLocalStorage = () => {
+    localStorage.removeItem('token');
+};
 
 export const login = async (email, password) => {
     try {
@@ -39,9 +50,27 @@ const getUserRole = async (uid) => {
 
 export const logout = async () => {
     await auth.signOut();
-    localStorage.removeItem('token');
+    removeTokenFromLocalStorage();
 };
 
+// export const isAuthenticated = () => {
+//     return auth.currentUser !== null;
+// };
+// export const isAuthenticated = async () => {
+//     const token = getTokenFromLocalStorage();
+//     if (token) {
+//         try {
+//             await firebase.auth().signInWithCredential(firebase.auth.EmailAuthProvider.credential(null, token));
+//             return true;
+//         } catch (error) {
+//             console.error('Error authenticating with the stored token:', error);
+//             removeTokenFromLocalStorage();
+//         }
+//     }
+
+//     return false;
+// };
 export const isAuthenticated = () => {
-    return auth.currentUser !== null;
+    const token = localStorage.getItem('token');
+    return token !== null;
 };
