@@ -29,9 +29,9 @@ const firebaseConfig = {
   appId: 'YOUR_APP_ID'
 };
 
-firebase.initializeApp(firebaseConfig);
-
-export const firestore = firebase.firestore();
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+}
 export const auth = firebase.auth();
 
 export default firebase; 
