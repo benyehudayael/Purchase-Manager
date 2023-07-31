@@ -1,8 +1,7 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect } from 'react';
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import firebase from './firebase';
-import { Container, Typography } from '@mui/material';
+import { Container } from '@mui/material';
 
 import MenuPage from './components/menu-page/MenuPage';
 import ProductsPage from './components/products-page/Products';
@@ -14,8 +13,11 @@ import LoginPage from './components/LoginPage';
 import NoAccess from './components/NoAccess';
 import GuardedRoute from './components/GuardedRoute';
 import ErrorNotification from './components/ErrorNotification';
-import { deleteError, setError } from './actions/errorActions';
+
+import { deleteError } from './actions/errorActions';
+import { loadInitialDataFromFirebase } from './firebaseUtils';
 import { startLoading, stopLoading } from './actions/loadingActions';
+import { isAuthenticated } from './auth'
 import './App.css';
 
 
@@ -23,53 +25,15 @@ const App = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const db = firebase.firestore();
-
   const location = useLocation();
-
   const isLoading = useSelector(state => state.loading);
   const error = useSelector(state => state.error);
-
-  const isAuthenticated = () => {
-    const token = localStorage.getItem('token');
-    return token !== null;
-  };
-
-  const fetchCollectionData = async (collectionName) => {
-    try {
-      const collection = db.collection(collectionName);
-      const snapshot = await collection.get();
-      return snapshot.docs.map(doc => doc.data());
-    } catch (error) {
-      console.error(`Error fetching data from ${collectionName}`, error);
-      throw new Error(`Failed to fetch data from ${collectionName}.`);
-    }
-  };
-
-  const loadInitialDataFromFirebase = useCallback(async () => {
-    try {
-      const products = await fetchCollectionData('products');
-      const customers = await fetchCollectionData('customers');
-      const purchases = await fetchCollectionData('purchases');
-      const users = await fetchCollectionData('users');
-
-      dispatch({ type: 'SET_PRODUCTS', payload: products });
-      dispatch({ type: 'SET_CUSTOMERS', payload: customers });
-      dispatch({ type: 'SET_PURCHASES', payload: purchases });
-      dispatch({ type: 'SET_USERS', payload: users });
-
-      console.log('Initial data loaded from Firebase successfully!');
-    } catch (error) {
-      console.error('Error loading initial data from Firebase:', error);
-      const err = 'There was an error loading data. Please try again later.';
-      dispatch(setError(err));
-    }
-  }, [db, dispatch]);
+  const isLoggedIn = isAuthenticated();
 
   useEffect(() => {
     const fetchData = async () => {
       dispatch(startLoading());
-      await loadInitialDataFromFirebase();
+      await loadInitialDataFromFirebase(dispatch);
       dispatch(stopLoading());
     };
 
@@ -80,7 +44,7 @@ const App = () => {
     const storedUserRole = localStorage.getItem('userRole');
     dispatch({ type: 'SET_ROLE', payload: storedUserRole });
 
-    if (!isAuthenticated) {
+    if (!isLoggedIn) {
       navigate('/login');
     }
 
@@ -90,7 +54,7 @@ const App = () => {
     ) {
       navigate('/no-access');
     }
-  }, [navigate, isAuthenticated, location.pathname, dispatch]);
+  }, [navigate, isLoggedIn, location.pathname, dispatch]);
 
   return (
     <Container className="fullHeight">
