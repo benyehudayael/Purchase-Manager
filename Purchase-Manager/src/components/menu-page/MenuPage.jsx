@@ -6,6 +6,7 @@ import { Typography, List, ListItem, ListItemText } from '@mui/material';
 import { logout } from '../../auth';
 import { setRole } from '../../actions/userAction';
 import ErrorNotification from '../ErrorNotification';
+import { listItemStyle, listItemTextStyle } from './styles';
 
 const MenuPage = () => {
     const dispatch = useDispatch();
@@ -13,13 +14,13 @@ const MenuPage = () => {
 
     const [errorMessage, setErrorMessage] = useState(null);
 
-    const handleLogout = async () => {
+    const logoutHandler = async () => {
         try {
             await logout();
             dispatch(setRole(null));
             navigate('/login');
         } catch (error) {
-            alert(error)
+            setErrorMessage(error)
         }
     };
 
@@ -27,8 +28,8 @@ const MenuPage = () => {
         setErrorMessage(null);
     };
 
-    const MenuListItem = ({ to, children }) => (
-        <ListItem button component={Link} to={to} style={listItemStyle}>
+    const MenuListItem = ({ path, children }) => (
+        <ListItem button component={Link} to={path} style={listItemStyle}>
             <ListItemText>
                 <Typography style={listItemTextStyle} variant="body1">
                     {children}
@@ -36,19 +37,6 @@ const MenuPage = () => {
             </ListItemText>
         </ListItem>
     );
-
-    // style //
-    const listItemStyle = {
-        height: '25%',
-    };
-
-    const listItemTextStyle = {
-        fontSize: '5rem',
-        fontFamily: '-webkit-body',
-        width: 'fit-content',
-        margin: 'auto',
-    };
-    // style //
 
     return (
         <>
@@ -61,12 +49,12 @@ const MenuPage = () => {
 
             <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.5rem' }}>
                 <Typography variant="h6" style={{ color: '#747bff' }}>Purchase Manager</Typography>
-                <button onClick={handleLogout}>Logout</button>
+                <button onClick={logoutHandler}>Logout</button>
             </div>
             <List>
-                <MenuListItem to="/products">Products</MenuListItem>
-                <MenuListItem to="/customers">Customers</MenuListItem>
-                <MenuListItem to="/purchases">Purchases</MenuListItem>
+                <MenuListItem path="/products">Products</MenuListItem>
+                <MenuListItem path="/customers">Customers</MenuListItem>
+                <MenuListItem path="/purchases">Purchases</MenuListItem>
             </List>
         </>
     );
