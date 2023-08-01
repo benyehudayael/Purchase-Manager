@@ -3,7 +3,7 @@ export const listItemStyle = {
 };
 
 export const listItemTextStyle = {
-    fontSize: '5rem',
+    fontSize: '4.5vw',
     fontFamily: '-webkit-body',
     width: 'fit-content',
     margin: 'auto',

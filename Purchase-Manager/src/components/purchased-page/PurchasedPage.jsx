@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { Autocomplete, TextField, Button } from '@mui/material';
+import { Autocomplete, TextField, Button, Grid } from '@mui/material';
 
 import PurchasesTable from '../PurchasesTable';
 
@@ -28,35 +28,46 @@ const PurchasedPage = () => {
     return (
         <div>
             <h1>Purchases Overview</h1>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                <Autocomplete
-                    options={products}
-                    getOptionLabel={product => product.name || ''}
-                    value={selectedProduct}
-                    onChange={(event, newValue) => setSelectedProduct(newValue)}
-                    renderInput={params => (
-                        <TextField {...params} label="Select Product" variant="outlined" />
-                    )}
-                />
-                <Autocomplete
-                    options={customers}
-                    getOptionLabel={customer => `${customer.firstName} ${customer.lastName}` || ''}
-                    value={selectedCustomer}
-                    onChange={(event, newValue) => setSelectedCustomer(newValue)}
-                    renderInput={params => (
-                        <TextField {...params} label="Select Customer" variant="outlined" />
-                    )}
-                />
-                <TextField
-                    label="Date"
-                    type="date"
-                    variant="outlined"
-                    value={selectedDate}
-                    onChange={event => setSelectedDate(event.target.value)}
-                    InputLabelProps={{ shrink: true }}
-                />
-                <Button variant="contained" onClick={handleSearch}>Search</Button>
-            </div>
+            <Grid container spacing={2} alignItems="center">
+                <Grid item xs={12} md={4}>
+                    <Autocomplete
+                        options={products}
+                        getOptionLabel={product => product.name || ''}
+                        value={selectedProduct}
+                        onChange={(event, newValue) => setSelectedProduct(newValue)}
+                        renderInput={params => (
+                            <TextField {...params} label="Select Product" variant="outlined" />
+                        )}
+                    />
+                </Grid>
+                <Grid item xs={12} md={4}>
+                    <Autocomplete
+                        options={customers}
+                        getOptionLabel={customer => `${customer.firstName} ${customer.lastName}` || ''}
+                        value={selectedCustomer}
+                        onChange={(event, newValue) => setSelectedCustomer(newValue)}
+                        renderInput={params => (
+                            <TextField {...params} label="Select Customer" variant="outlined" />
+                        )}
+                    />
+                </Grid>
+                <Grid item xs={12} md={3}>
+                    <TextField
+                        label="Date"
+                        type="date"
+                        variant="outlined"
+                        value={selectedDate}
+                        onChange={event => setSelectedDate(event.target.value)}
+                        InputLabelProps={{ shrink: true }}
+                        fullWidth
+                    />
+                </Grid>
+                <Grid item xs={12} md={1}>
+                    <Button variant="contained" onClick={handleSearch} fullWidth>
+                        Search
+                    </Button>
+                </Grid>
+            </Grid>
             {filteredPurchases.length > 0 ? (
                 <PurchasesTable purchases={filteredPurchases} />
             ) : (

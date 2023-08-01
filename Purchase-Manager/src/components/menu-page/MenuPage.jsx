@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { Typography, List, ListItem, ListItemText } from '@mui/material';
+import { Typography, List, ListItem, ListItemText, Container, Box } from '@mui/material';
 
 import { logout } from '../../auth';
 import { setRole } from '../../actions/userAction';
 import ErrorNotification from '../ErrorNotification';
+import { auth } from '../../firebase'
 import { listItemStyle, listItemTextStyle } from './styles';
 
 const MenuPage = () => {
@@ -13,6 +14,16 @@ const MenuPage = () => {
     const navigate = useNavigate();
 
     const [errorMessage, setErrorMessage] = useState(null);
+    const [user, setUser] = useState(null);
+
+    useEffect(() => {
+        const fetchUserInfo = () => {
+            const currentUser = auth.currentUser;
+            if (currentUser) setUser(currentUser);
+        };
+
+        fetchUserInfo();
+    }, []);
 
     const logoutHandler = async () => {
         try {
@@ -47,15 +58,26 @@ const MenuPage = () => {
                 />
             )}
 
-            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.5rem' }}>
-                <Typography variant="h6" style={{ color: '#747bff' }}>Purchase Manager</Typography>
-                <button onClick={logoutHandler}>Logout</button>
-            </div>
-            <List>
-                <MenuListItem path="/products">Products</MenuListItem>
-                <MenuListItem path="/customers">Customers</MenuListItem>
-                <MenuListItem path="/purchases">Purchases</MenuListItem>
-            </List>
+            <Container maxWidth="md">
+                <Box display="flex" justifyContent="space-between" padding="0.5rem">
+                    <Typography variant="h6" style={{ color: '#747bff' }}>
+                        Purchase Manager
+                    </Typography>
+                    <Box display="flex" alignItems="center">
+                        {user && (
+                            <Typography variant="body1" style={{ marginRight: '1rem' }}>
+                                Hello, {user.email}
+                            </Typography>
+                        )}
+                        <button onClick={logoutHandler}>Logout</button>
+                    </Box>
+                </Box>
+                <List>
+                    <MenuListItem path="/products">Products</MenuListItem>
+                    <MenuListItem path="/customers">Customers</MenuListItem>
+                    <MenuListItem path="/purchases">Purchases</MenuListItem>
+                </List>
+            </Container>
         </>
     );
 };

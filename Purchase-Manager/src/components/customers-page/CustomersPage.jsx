@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button, Select, MenuItem, FormControl, InputLabel, Typography } from '@mui/material';
+import { Button, Select, MenuItem, FormControl, InputLabel, Typography, Grid } from '@mui/material';
 
 import PurchasesTable from '../PurchasesTable';
 import { addPurchase } from '../../actions/purchasesActions';
@@ -61,58 +61,63 @@ const CustomersPage = () => {
     return (
         <>
             <Typography style={{ width: 'fit-content', margin: '1rem auto 1rem auto' }} variant="h3">Customer Purchases</Typography>
-            <div style={{ display: 'flex', justifyContent: 'space-around' }}>
-                <div className="region1">
-                    <PurchasesTable purchases={purchases} />
-                </div>
-                <div className="region2">
-                    <Button style={{ backgroundColor: 'black', color: 'white', margin: '16px' }} onClick={() => setIsFormOpen(true)}>Buy Product</Button>
-                    {isFormOpen && (
-                        <form style={{ gap: '1rem', }}>
-                            <FormControl>
-                                <InputLabel>Select Product</InputLabel>
-                                <Select
-                                    value={selectedProduct}
-                                    onChange={e => setSelectedProduct(e.target.value)}
-                                >
-                                    {products.map(product => (
-                                        <MenuItem key={product.id} value={product.id}>
-                                            {product.name}
-                                        </MenuItem>
-                                    ))}
-                                </Select>
-                            </FormControl>
+            <Grid container spacing={2}>
+                <Grid item xs={12} md={6}>
+                    {/* Purchases Table */}
+                    <div className="region1">
+                        <PurchasesTable purchases={purchases} />
+                    </div>
+                </Grid>
+                <Grid item xs={12} md={6}>
+                    {/* Purchase Form */}
+                    <div className="region2">
+                        <Button style={{ backgroundColor: 'black', color: 'white', margin: '16px' }} onClick={() => setIsFormOpen(true)}>Buy Product</Button>
+                        {isFormOpen && (
+                            <form style={{ gap: '1rem', }}>
+                                <FormControl>
+                                    <InputLabel>Select Product</InputLabel>
+                                    <Select
+                                        value={selectedProduct}
+                                        onChange={e => setSelectedProduct(e.target.value)}
+                                    >
+                                        {products.map(product => (
+                                            <MenuItem key={product.id} value={product.id}>
+                                                {product.name}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
 
-                            <FormControl>
-                                <InputLabel>Select Customer</InputLabel>
-                                <Select
-                                    value={selectedCustomer}
-                                    onChange={e => setSelectedCustomer(e.target.value)}
-                                >
-                                    {customers.map(customer => (
-                                        <MenuItem key={customer.id} value={customer.id}>
-                                            {customer.firstName} {customer.lastName}
-                                        </MenuItem>
-                                    ))}
-                                </Select>
-                            </FormControl>
+                                <FormControl>
+                                    <InputLabel>Select Customer</InputLabel>
+                                    <Select
+                                        value={selectedCustomer}
+                                        onChange={e => setSelectedCustomer(e.target.value)}
+                                    >
+                                        {customers.map(customer => (
+                                            <MenuItem key={customer.id} value={customer.id}>
+                                                {customer.firstName} {customer.lastName}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
 
-                            <Button variant="contained" onClick={handleBuyProduct} disabled={!selectedProduct || !selectedCustomer}>
-                                Buy
-                            </Button>
-                            <Button variant="contained" onClick={handleCancel}>
-                                Cancel
-                            </Button>
-                        </form>
-                    )}
-                    {isPurchaseSuccess && (
-                        <Typography variant="body1" style={{ color: 'green' }}>
-                            Purchase successful!
-                        </Typography>
-                    )}
-                </div>
-            </div>
-
+                                <Button variant="contained" onClick={handleBuyProduct} disabled={!selectedProduct || !selectedCustomer}>
+                                    Buy
+                                </Button>
+                                <Button variant="contained" onClick={handleCancel}>
+                                    Cancel
+                                </Button>
+                            </form>
+                        )}
+                        {isPurchaseSuccess && (
+                            <Typography variant="body1" style={{ color: 'green' }}>
+                                Purchase successful!
+                            </Typography>
+                        )}
+                    </div>
+                </Grid>
+            </Grid>
         </>
     );
 };

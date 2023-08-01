@@ -17,9 +17,7 @@ a:hover {
   color: #747bff;
 }
 
-.css-wb57ya-MuiFormControl-root-MuiTextField-root {
-  width: 200px !important;
-}
+
 
 .root {
   height: 100%;
@@ -101,11 +99,13 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
-.css-149xwtl-MuiTypography-root {
-  margin: 40px auto;
+.css-icizyq-MuiTypography-root {
+  padding: 1rem;
+  color: #1565c0;
+  width: fit-content;
+  font-size: 4rem;
   font-family: 'Ubuntu', sans-serif;
   font-weight: bold;
-  color: #121212;
   text-align: center;
   letter-spacing: 5px;
   text-shadow: 2px 7px 5px rgba(0, 0, 0, 0.3),

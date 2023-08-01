@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper, List, ListItem, ListItemText } from '@mui/material';
+import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper, List, ListItem, ListItemText, Grid } from '@mui/material';
 
 const PurchasesTable = ({ purchases }) => {
 
@@ -43,23 +43,31 @@ const PurchasesTable = ({ purchases }) => {
                                             {`${customer.firstName} ${customer.lastName}`}
                                         </Link>}
                                     </TableCell>
-                                    <TableCell style={{ display: "flex" }}>
-                                        <List>
-                                            {purchasedProducts && purchasedProducts.map((product, index) => {
-                                                return (<ListItem key={index}>
-                                                    <Link to={`/edit-product/${product.id}`}>
-                                                        <ListItemText primary={product.name} />
-                                                    </Link>
-                                                </ListItem>)
-                                            })}
-                                        </List>
-                                        <List>
-                                            {dates && dates.map((date, index) => (
-                                                <ListItem key={index}>
-                                                    <ListItemText primary={date} />
-                                                </ListItem>
-                                            ))}
-                                        </List>
+                                    <TableCell>
+                                        <Grid container spacing={2}>
+                                            <Grid item xs={12} md={6}>
+                                                <List>
+                                                    {purchasedProducts && purchasedProducts.map((product, index) => {
+                                                        return (
+                                                            <ListItem key={index}>
+                                                                <Link to={`/edit-product/${product.id}`}>
+                                                                    <ListItemText primary={product.name} />
+                                                                </Link>
+                                                            </ListItem>
+                                                        );
+                                                    })}
+                                                </List>
+                                            </Grid>
+                                            <Grid item xs={12} md={6}>
+                                                <List>
+                                                    {dates && dates.map((date, index) => (
+                                                        <ListItem key={index}>
+                                                            <ListItemText primary={date} />
+                                                        </ListItem>
+                                                    ))}
+                                                </List>
+                                            </Grid>
+                                        </Grid>
                                     </TableCell>
                                 </TableRow>
                             );
