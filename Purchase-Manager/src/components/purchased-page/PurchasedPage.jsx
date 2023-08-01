@@ -23,7 +23,6 @@ const PurchasedPage = () => {
         });
 
         setFilteredPurchases(filteredPurchases);
-        console.log(filteredPurchases);
     }, [selectedCustomer, selectedProduct, selectedDate, purchases]);
 
     return (

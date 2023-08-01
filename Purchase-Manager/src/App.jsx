@@ -13,6 +13,8 @@ import LoginPage from './components/LoginPage';
 import NoAccess from './components/NoAccess';
 import GuardedRoute from './components/GuardedRoute';
 import ErrorNotification from './components/ErrorNotification';
+import RegistrationPage from './components/registration-page/RegistrationPage';
+import LandingPage from './components/LandingPage';
 
 import { deleteError } from './actions/errorActions';
 import { loadInitialDataFromFirebase } from './firebaseUtils';
@@ -45,10 +47,6 @@ const App = () => {
     const storedUserRole = localStorage.getItem('userRole');
     dispatch(setRole(storedUserRole));
 
-    if (!isLoggedIn) {
-      navigate('/login');
-    }
-
     if (storedUserRole !== 'admin' &&
       (location.pathname.includes('/edit-product/') ||
         location.pathname.includes('/edit-customer/'))
@@ -62,9 +60,11 @@ const App = () => {
       {isLoading && <div className="load"></div>}
       {error && <ErrorNotification message={error} onClose={() => dispatch(deleteError())} />}
       <Routes>
+        {!isLoggedIn && <Route path="/" element={<LandingPage />} />}
+        <Route path="/register" element={<RegistrationPage />} />
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/" element={<MenuPage />} />
-        <Route path="/products" element={<ProductsPage />} />
+        {isLoggedIn && <Route path="/" element={<MenuPage />} />}
+        {isLoggedIn && <Route path="/products" element={<ProductsPage />} />}
         {GuardedRoute({
           path: "/edit-product/:productId",
           element: <EditProductPage />,
@@ -75,9 +75,9 @@ const App = () => {
           element: <EditCustomerPage />,
           roles: ['admin']
         })}
-        <Route path="/no-access" element={<NoAccess />} />
-        <Route path="/customers" element={<CustomersPage />} />
-        <Route path="/purchases" element={<PurchasedPage />} />
+        {isLoggedIn && <Route path="/no-access" element={<NoAccess />} />}
+        {isLoggedIn && <Route path="/customers" element={<CustomersPage />} />}
+        {isLoggedIn && <Route path="/purchases" element={<PurchasedPage />} />}
       </Routes>
     </Container>
   );

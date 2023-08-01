@@ -97,7 +97,7 @@ const CustomersPage = () => {
                                 </Select>
                             </FormControl>
 
-                            <Button variant="contained" onClick={handleBuyProduct}>
+                            <Button variant="contained" onClick={handleBuyProduct} disabled={!selectedProduct || !selectedCustomer}>
                                 Buy
                             </Button>
                             <Button variant="contained" onClick={handleCancel}>
