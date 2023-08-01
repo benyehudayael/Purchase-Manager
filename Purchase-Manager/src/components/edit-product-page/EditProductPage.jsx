@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { Typography, Box, TextField, Button } from '@mui/material';
@@ -24,10 +24,19 @@ const EditProductPage = () => {
         }
     }, [product]);
 
-    const productCustomers = purchases
-        .filter(purchase => purchase.productID === parseInt(id, 10))
-        .map(purchase => customers.find(customer => customer.id === purchase.customerID))
-        .filter(Boolean);
+    const getProductCustomers = (productId) => {
+        const customerIds = purchases
+            .filter(purchase => purchase.productID === parseInt(productId, 10))
+            .map(purchase => purchase.customerID);
+
+        const filteredCustomers = customers.filter(customer =>
+            customerIds.includes(customer.id)
+        );
+
+        return filteredCustomers;
+    };
+
+    const productCustomers = useMemo(() => getProductCustomers(id), [id, purchases, customers]);
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -87,8 +96,8 @@ const EditProductPage = () => {
             <div>
                 <Typography variant="subtitle1" mt={3}>Customers who bought this product:</Typography>
                 {productCustomers.length > 0 ? (
-                    productCustomers.map(customer => (
-                        <Typography variant="body1" key={customer.id}>
+                    productCustomers.map((customer, index) => (
+                        <Typography variant="body1" key={index}>
                             <Link to={`/edit-customer/${customer.id}`}>{`${customer.firstName} ${customer.lastName}`}</Link>
                         </Typography>
                     ))

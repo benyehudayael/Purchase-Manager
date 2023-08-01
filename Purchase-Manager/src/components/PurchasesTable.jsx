@@ -72,4 +72,4 @@ const PurchasesTable = ({ purchases }) => {
     );
 };
 
-export default PurchasesTable;
+export default React.memo(PurchasesTable);

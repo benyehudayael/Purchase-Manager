@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Box, Card, Typography } from '@mui/material';
 
@@ -8,7 +8,16 @@ const ProductsPage = () => {
     const products = useSelector((state) => state.products);
     const purchases = useSelector((state) => state.purchases);
 
-    const totalPurchasedProducts = purchases.length;
+    const [totalPurchasedProducts, setTotalPurchasedProducts] = useState(purchases.length);
+
+    useEffect(() => {
+        setTotalPurchasedProducts(purchases.length);
+        const unsubscribe = () => {
+            setTotalPurchasedProducts(purchases.length);
+        };
+
+        return unsubscribe;
+    }, [purchases]);
 
     return (
         <Box sx={{ display: 'flex', justifyContent: 'space-around', marginTop: '25px' }}>

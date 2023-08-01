@@ -16,11 +16,7 @@ const EditCustomerPage = () => {
     const purchases = useSelector((state) => state.purchases);
 
     const customer = customers.find((customer) => customer.id === Number(id));
-    const [formData, setFormData] = useState({
-        firstName: '',
-        lastName: '',
-        city: '',
-    });
+    const [formData, setFormData] = useState({ firstName: '', lastName: '', city: '' });
     const [productsCustomer, setProductsCustomer] = useState([]);
 
     useEffect(() => {
@@ -52,10 +48,7 @@ const EditCustomerPage = () => {
         if (!firstName || !lastName || !city) {
             alert("Please fill in all the required fields");
         } else {
-            const updatedCustomer = {
-                id: customer.id,
-                ...formData
-            };
+            const updatedCustomer = { id: customer.id, ...formData };
 
             dispatch(updateCustomer(updatedCustomer));
             alert("Awesome! You've successfully updated the customer.")

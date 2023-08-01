@@ -67,4 +67,4 @@ const CustomerPurchase = ({ customer: { id, firstName, lastName, city, purchased
     );
 };
 
-export default CustomerPurchase;
+export default React.memo(CustomerPurchase);

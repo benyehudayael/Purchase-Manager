@@ -117,4 +117,4 @@ const CustomersPage = () => {
     );
 };
 
-export default CustomersPage;
+export default React.memo(CustomersPage);;
