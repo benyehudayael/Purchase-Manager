@@ -3,10 +3,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { Typography, List, ListItem, ListItemText, Container, Box } from '@mui/material';
 
-import { logout } from '../../auth';
 import { setRole } from '../../actions/userAction';
 import ErrorNotification from '../ErrorNotification';
-import { auth } from '../../firebase'
+import { logout, fetchUserInfo } from '../../utils/auth';
 import { listItemStyle, listItemTextStyle } from './styles';
 
 const MenuPage = () => {
@@ -17,12 +16,8 @@ const MenuPage = () => {
     const [user, setUser] = useState(null);
 
     useEffect(() => {
-        const fetchUserInfo = () => {
-            const currentUser = auth.currentUser;
-            if (currentUser) setUser(currentUser);
-        };
-
-        fetchUserInfo();
+        const u = fetchUserInfo();
+        setUser(u);
     }, []);
 
     const logoutHandler = async () => {

@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import CustomerPurchase from './CustomerPurchase';
 import { addPurchase } from '../../actions/purchasesActions';
 import { updateProduct } from '../../actions/productsActions';
+import { getCurrentDateISOString } from '../../utils/helper'
 
 import { getRelatedCustomers } from '../../selectors';
 const Product = ({ product: { id, name, price, quantity } }) => {
@@ -16,12 +17,12 @@ const Product = ({ product: { id, name, price, quantity } }) => {
 
     const handleSave = useCallback(
         (customerId, selectedProduct) => {
-            const currentDate = new Date();
+            const currentDate = getCurrentDateISOString();
             const newPurchase = {
                 id: currentDate.toString(),
                 customerID: customerId,
                 productID: selectedProduct.id,
-                date: currentDate.toISOString().slice(0, 10),
+                date: currentDate,
             };
             const updatedProduct = { ...selectedProduct, quantity: selectedProduct.quantity - 1 };
 

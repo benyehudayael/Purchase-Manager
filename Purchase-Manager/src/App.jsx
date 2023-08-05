@@ -20,7 +20,7 @@ import { deleteError } from './actions/errorActions';
 import { loadInitialDataFromFirebase } from './firebaseUtils';
 import { setRole } from './actions/userAction'
 import { startLoading, stopLoading } from './actions/loadingActions';
-import { isAuthenticated } from './auth'
+import { isAuthenticated } from './utils/auth'
 import './App.css';
 
 

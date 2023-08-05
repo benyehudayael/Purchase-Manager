@@ -1,16 +1,21 @@
 import 'firebase/auth';
 import firebase from 'firebase/app';
-import { auth } from './firebase';
+import { auth } from '../firebase';
 
-const storeTokenInLocalStorage = (token) => {
+export const fetchUserInfo = () => {
+    const currentUser = auth.currentUser;
+    return currentUser ? currentUser : null;
+};
+
+export const storeTokenInLocalStorage = (token) => {
     localStorage.setItem('token', token);
 };
 
-const getTokenFromLocalStorage = () => {
+export const getTokenFromLocalStorage = () => {
     return localStorage.getItem('token');
 };
 
-const removeTokenFromLocalStorage = () => {
+export const removeTokenFromLocalStorage = () => {
     localStorage.removeItem('token');
 };
 
@@ -53,24 +58,11 @@ export const logout = async () => {
     removeTokenFromLocalStorage();
 };
 
-// export const isAuthenticated = () => {
-//     return auth.currentUser !== null;
-// };
-// export const isAuthenticated = async () => {
-//     const token = getTokenFromLocalStorage();
-//     if (token) {
-//         try {
-//             await firebase.auth().signInWithCredential(firebase.auth.EmailAuthProvider.credential(null, token));
-//             return true;
-//         } catch (error) {
-//             console.error('Error authenticating with the stored token:', error);
-//             removeTokenFromLocalStorage();
-//         }
-//     }
-
-//     return false;
-// };
 export const isAuthenticated = () => {
     const token = getTokenFromLocalStorage();
     return token !== null;
+};
+
+export const isPasswordMatch = (password, confirmPassword) => {
+    return password === confirmPassword;
 };

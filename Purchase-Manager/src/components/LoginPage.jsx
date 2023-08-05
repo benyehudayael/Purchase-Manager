@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { Button, TextField, Typography } from '@mui/material';
 
-import { login } from '../auth';
+import { storeTokenInLocalStorage, login } from '../utils/auth'
 
 const LoginPage = () => {
     const [email, setEmail] = useState('');
@@ -17,7 +17,7 @@ const LoginPage = () => {
 
         try {
             const { token, role } = await login(email, password);
-            localStorage.setItem('token', token);
+            storeTokenInLocalStorage(token);
             localStorage.setItem('userRole', role);
             dispatch({ type: 'SET_ROLE', payload: role });
             navigate('/');

@@ -12,11 +12,6 @@ const ProductsPage = () => {
 
     useEffect(() => {
         setTotalPurchasedProducts(purchases.length);
-        const unsubscribe = () => {
-            setTotalPurchasedProducts(purchases.length);
-        };
-
-        return unsubscribe;
     }, [purchases]);
 
     return (

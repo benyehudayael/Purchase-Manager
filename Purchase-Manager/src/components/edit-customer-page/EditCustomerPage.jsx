@@ -4,7 +4,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { TextField, Button, Typography, Box, List, ListItem, ListItemText, Container, Grid } from '@mui/material';
 
 import { updateCustomer, deleteCustomer } from '../../actions/customersActions';
-import { removePurchasesByCustomerId } from '../../actions/purchasesActions'
+import { removePurchasesByCustomerId } from '../../actions/purchasesActions';
+import { getProductsByCustomerId } from '../../utils/products';
+import { updateFormData } from '../../utils/form';
 
 const EditCustomerPage = () => {
     const { customerId: id } = useParams();
@@ -27,18 +29,12 @@ const EditCustomerPage = () => {
     }, [customer]);
 
     useEffect(() => {
-        const customerPurchases = purchases.filter(purchase => purchase.customerID === Number(id));
-        const productIds = customerPurchases.map(purchase => purchase.productID);
-        const pC = products.filter(product => productIds.includes(product.id));
+        const pC = getProductsByCustomerId(Number(id), purchases, products);
         setProductsCustomer(pC);
     }, [id, purchases, products]);
 
     const handleInputChange = (event) => {
-        const { name, value } = event.target;
-        setFormData((prevData) => ({
-            ...prevData,
-            [name]: value,
-        }));
+        updateFormData(event, formData, setFormData);
     };
 
     const handleUpdateCustomer = event => {

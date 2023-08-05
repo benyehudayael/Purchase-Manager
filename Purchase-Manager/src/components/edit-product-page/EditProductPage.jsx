@@ -4,6 +4,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom';
 import { Typography, Box, TextField, Button, Container, Grid, ListItemText, ListItem } from '@mui/material';
 import { deleteProduct, updateProduct } from '../../actions/productsActions';
 import { removePurchasesByProductId } from '../../actions/purchasesActions';
+import { getCustomersByProductId } from '../../utils/customers'
 
 const EditProductPage = () => {
     const { productId: id } = useParams();
@@ -17,10 +18,6 @@ const EditProductPage = () => {
     const product = products.find((product) => product.id === Number(id));
     const [formData, setFormData] = useState({ name: '', price: '', quantity: '' });
 
-    const [productName, setProductName] = useState('');
-    const [productPrice, setProductPrice] = useState(0);
-    const [productQuantity, setProductQuantity] = useState(0);
-
     useEffect(() => {
         if (product) {
             const { name, price, quantity } = product;
@@ -28,31 +25,7 @@ const EditProductPage = () => {
         }
     }, [product]);
 
-    const getProductCustomers = (productId) => {
-        const customerIds = purchases
-            .filter(purchase => purchase.productID === parseInt(productId, 10))
-            .map(purchase => purchase.customerID);
-
-        const filteredCustomers = customers.filter(customer =>
-            customerIds.includes(customer.id)
-        );
-
-        return filteredCustomers;
-    };
-
-    const productCustomers = useMemo(() => getProductCustomers(id), [id, purchases, customers]);
-
-    // const handleProductNameChange = event => {
-    //     setProductName(event.target.value);
-    // };
-
-    // const handleProductPriceChange = event => {
-    //     setProductPrice(event.target.valueAsNumber);
-    // };
-
-    // const handleProductQuantityChange = event => {
-    //     setProductQuantity(event.target.valueAsNumber);
-    // };
+    const productCustomers = useMemo(() => getCustomersByProductId(id, purchases, customers), [id, purchases, customers]);
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
@@ -76,7 +49,7 @@ const EditProductPage = () => {
         }
     };
 
-    const handleDeleteProduct = () => {
+    const handleDeleteProduct = async () => {
         dispatch(deleteProduct(id));
         dispatch(removePurchasesByProductId(id));
         alert('Product successfully deleted');
@@ -84,7 +57,7 @@ const EditProductPage = () => {
     };
 
     return (
-        <Container maxWidth="md"> {/* Wrap the entire component in a Container */}
+        <Container maxWidth="md">
             <Grid container spacing={3} justifyContent="space-around">
                 <Grid item xs={12} md={6}>
                     {/* Product form */}

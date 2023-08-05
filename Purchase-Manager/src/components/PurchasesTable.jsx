@@ -3,25 +3,11 @@ import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper, List, ListItem, ListItemText, Grid } from '@mui/material';
 
-const PurchasesTable = ({ purchases }) => {
+import { getPurchasedProductsByCustomerID } from '../utils/purchases'
 
+const PurchasesTable = ({ purchases }) => {
     const products = useSelector(state => state.products);
     const customers = useSelector(state => state.customers);
-
-    const getPurchasedProductsByCustomerID = (customerID) => {
-        const customerPurchases = purchases.filter(purchase => purchase.customerID === customerID);
-        const dates = customerPurchases.map(purchase => {
-            const date = purchase.date
-            const formattedDate = date.replace(/-/g, '/');
-            return formattedDate;
-        });
-        const purchasedProducts = customerPurchases.map(purchase => {
-            return products.find(product => product.id === purchase.productID);
-        });
-        // const productIDs = customerPurchases.map(purchase => purchase.productID);
-        // const purchasedProducts = products.filter(product => productIDs.includes(product.id));
-        return { purchasedProducts, dates };
-    };
 
     return (
         <TableContainer component={Paper} style={{ marginTop: '16px' }}>
@@ -34,7 +20,7 @@ const PurchasesTable = ({ purchases }) => {
                 </TableHead>
                 <TableBody>
                     {customers.map(customer => {
-                        const { purchasedProducts, dates } = getPurchasedProductsByCustomerID(customer.id);
+                        const { purchasedProducts, dates } = getPurchasedProductsByCustomerID(purchases, products, customer.id);
                         if (purchasedProducts.length > 0 && dates.length > 0) {
                             return (
                                 <TableRow key={customer.id}>

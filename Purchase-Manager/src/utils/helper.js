@@ -4,3 +4,8 @@ export function generateUniqueId() {
     const uniqueId = parseInt(`${timestamp}${random}`);
     return uniqueId;
 }
+
+export const getCurrentDateISOString = () => {
+    const currentDate = new Date();
+    return currentDate.toISOString().slice(0, 10);
+};

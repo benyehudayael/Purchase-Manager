@@ -5,20 +5,20 @@ import { Button, Select, MenuItem, FormControl, InputLabel, Typography, Grid } f
 import PurchasesTable from '../PurchasesTable';
 import { addPurchase } from '../../actions/purchasesActions';
 import { setError } from '../../actions/errorActions';
-import { generateUniqueId } from '../../helper';
+import { generateUniqueId } from '../../utils/helper';
 
 
 const CustomersPage = () => {
+    const dispatch = useDispatch();
+
     const [selectedProduct, setSelectedProduct] = useState('');
     const [selectedCustomer, setSelectedCustomer] = useState('');
     const [isFormOpen, setIsFormOpen] = useState(false);
-    const dispatch = useDispatch();
+    const [isPurchaseSuccess, setPurchaseSuccess] = useState(false);
 
     const customers = useSelector(state => state.customers);
     const products = useSelector(state => state.products);
     const purchases = useSelector(state => state.purchases);
-
-    const [isPurchaseSuccess, setPurchaseSuccess] = useState(false);
 
     const resetSelections = () => {
         setSelectedProduct('');
@@ -122,4 +122,4 @@ const CustomersPage = () => {
     );
 };
 
-export default React.memo(CustomersPage);;
+export default React.memo(CustomersPage);

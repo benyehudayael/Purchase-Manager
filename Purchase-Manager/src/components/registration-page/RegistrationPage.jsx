@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { TextField, Button, Typography, Container, Box } from '@mui/material';
 import { auth } from '../../firebase';
 
+import { isPasswordMatch } from '../../utils/auth'
+
 const RegistrationPage = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -13,14 +15,13 @@ const RegistrationPage = () => {
     const handleRegistration = async (event) => {
         event.preventDefault();
 
-        if (password !== confirmPassword) {
+        if (!isPasswordMatch(password, confirmPassword)) {
             setError('Passwords do not match.');
             return;
         }
 
         try {
-            await auth.createUserWithEmailAndPassword(email, password);
-            setError(null);
+            (await auth.createUserWithEmailAndPassword(email, password));
             navigate('/login');
         } catch (error) {
             setError(error.message);

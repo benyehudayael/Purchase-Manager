@@ -5,10 +5,10 @@ import { Provider } from 'react-redux';
 import { legacy_createStore as createStore } from 'redux';
 
 import App from './App';
-import appReducer from './reducers/index.js';
+import rootReducer from './reducers/appReducers';
 import './index.css';
 
-const appStore = createStore(appReducer)
+const appStore = createStore(rootReducer)
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <Provider store={appStore}>
