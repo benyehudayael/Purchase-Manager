@@ -18,7 +18,7 @@ const MenuPage = () => {
     useEffect(() => {
         const u = fetchUserInfo();
         setUser(u);
-    }, []);
+    }, [user]);
 
     const logoutHandler = async () => {
         try {

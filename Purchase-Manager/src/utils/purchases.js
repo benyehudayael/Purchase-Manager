@@ -16,6 +16,6 @@ export const getPurchasedProductsByCustomerID = (purchases, products, customerID
     });
     const purchasedProducts = customerPurchases.map(purchase => {
         return products.find(product => product.id === purchase.productID);
-    });
+    }).filter(Boolean);
     return { purchasedProducts, dates };
 };

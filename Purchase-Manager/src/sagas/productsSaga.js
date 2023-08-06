@@ -5,21 +5,51 @@ import * as actions from '../actions/productsActions';
 const db = firebase.firestore();
 
 function* addProduct(action) {
-    const newProduct = action.payload;
-    yield call([db.collection('products'), 'add'], newProduct);
-    yield put({ type: actions.ADD_PRODUCT_SUCCESS, payload: newProduct });
+    try {
+        const newProduct = action.payload;
+        yield call(() => db.collection('products').add(newProduct));
+        yield put({ type: 'ADD_PRODUCT_SUCCESS', payload: newProduct });
+    } catch (error) {
+        yield put({ type: 'ADD_PRODUCT_FAILURE', payload: error });
+    }
 }
 
 function* updateProduct(action) {
-    const updatedProduct = action.payload;
-    yield call([db.collection('products'), 'doc', updatedProduct.id, 'update'], updatedProduct);
-    yield put({ type: actions.UPDATE_PRODUCT_SUCCESS, payload: updatedProduct });
+    try {
+        const updatedProduct = action.payload;
+        yield call(() => db.collection('products')
+            .where('id', '==', updatedProduct.id)
+            .get()
+            .then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    db.collection('products').doc(doc.id).update(updatedProduct);
+                });
+            })
+        );
+        yield put({ type: 'UPDATE_PRODUCT_SUCCESS', payload: updatedProduct });
+    } catch (error) {
+        yield put({ type: 'UPDATE_PRODUCT_FAILURE', payload: error });
+    }
 }
 
 function* deleteProduct(action) {
-    const productId = action.payload;
-    yield call([db.collection('products'), 'doc', productId, 'delete']);
-    yield put({ type: actions.DELETE_PRODUCT_SUCCESS, payload: productId });
+    try {
+        const productId = action.payload;
+        yield call(() => db.collection('products')
+            .where('id', '==', Number(productId))
+            .get()
+            .then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    doc.ref.delete().then(() => {
+                        console.log('Product successfully deleted!');
+                    });
+                });
+            })
+        );
+        yield put({ type: 'DELETE_PRODUCT_SUCCESS', payload: productId });
+    } catch (error) {
+        yield put({ type: 'DELETE_PRODUCT_FAILURE', payload: error });
+    }
 }
 
 export function* productsSaga() {
