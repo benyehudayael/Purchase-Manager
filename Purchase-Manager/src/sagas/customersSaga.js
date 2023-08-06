@@ -3,49 +3,48 @@ import firebase from '../firebase';
 import * as actions from '../actions/customersActions';
 
 const db = firebase.firestore();
+const COLLECTION = 'customers';
+const ID = 'id';
 
-function* addCustomer(action) {
+const addCustomerToDB = (customer) => db.collection(COLLECTION).add(customer);
+const updateCustomerInDB = (customer) => db.collection(COLLECTION)
+    .where(ID, '==', customer.id)
+    .get()
+    .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+            db.collection(COLLECTION).doc(doc.id).update(customer);
+        });
+    });
+const deleteCustomerFromDB = (customerId) => db.collection(COLLECTION)
+    .where(ID, '==', Number(customerId))
+    .get()
+    .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+            doc.ref.delete();
+        });
+    });
+
+const addCustomer = function* ({ payload: newCustomer }) {
     try {
-        const newCustomer = action.payload;
-        yield call(() => db.collection('customers').add(newCustomer));
+        yield call(addCustomerToDB, newCustomer);
         yield put({ type: 'ADD_CUSTOMER_SUCCESS', payload: newCustomer });
     } catch (error) {
         yield put({ type: 'ADD_CUSTOMER_FAILURE', payload: error });
     }
 }
 
-function* updateCustomer(action) {
+const updateCustomer = function* ({ payload: updatedCustomer }) {
     try {
-        const updatedCustomer = action.payload;
-        yield call(() => db.collection('customers')
-            .where('id', '==', updatedCustomer.id)
-            .get()
-            .then((querySnapshot) => {
-                querySnapshot.forEach((doc) => {
-                    db.collection('customers').doc(doc.id).update(updatedCustomer);
-                });
-            })
-        );
+        yield call(updateCustomerInDB, updatedCustomer);
         yield put({ type: 'UPDATE_CUSTOMER_SUCCESS', payload: updatedCustomer });
     } catch (error) {
         yield put({ type: 'UPDATE_CUSTOMER_FAILURE', payload: error });
     }
 }
 
-function* deleteCustomer(action) {
+const deleteCustomer = function* ({ payload: customerId }) {
     try {
-        const customerId = action.payload;
-        yield call(() => db.collection('customers')
-            .where('id', '==', Number(customerId))
-            .get()
-            .then((querySnapshot) => {
-                querySnapshot.forEach((doc) => {
-                    doc.ref.delete().then(() => {
-                        console.log('Customer successfully deleted!');
-                    });
-                });
-            })
-        );
+        yield call(deleteCustomerFromDB, customerId);
         yield put({ type: 'DELETE_CUSTOMER_SUCCESS', payload: customerId });
     } catch (error) {
         yield put({ type: 'DELETE_CUSTOMER_FAILURE', payload: error });

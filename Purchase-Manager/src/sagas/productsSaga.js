@@ -3,49 +3,48 @@ import firebase from '../firebase';
 import * as actions from '../actions/productsActions';
 
 const db = firebase.firestore();
+const COLLECTION = 'products';
+const ID = 'id';
 
-function* addProduct(action) {
+const addProductToDB = (product) => db.collection(COLLECTION).add(product);
+const updateProductInDB = (product) => db.collection(COLLECTION)
+    .where(ID, '==', product.id)
+    .get()
+    .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+            db.collection(COLLECTION).doc(doc.id).update(product);
+        });
+    });
+const deleteProductFromDB = (productId) => db.collection(COLLECTION)
+    .where(ID, '==', Number(productId))
+    .get()
+    .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+            doc.ref.delete();
+        });
+    });
+
+const addProduct = function* ({ payload: newProduct }) {
     try {
-        const newProduct = action.payload;
-        yield call(() => db.collection('products').add(newProduct));
+        yield call(addProductToDB, newProduct);
         yield put({ type: 'ADD_PRODUCT_SUCCESS', payload: newProduct });
     } catch (error) {
         yield put({ type: 'ADD_PRODUCT_FAILURE', payload: error });
     }
 }
 
-function* updateProduct(action) {
+const updateProduct = function* ({ payload: updatedProduct }) {
     try {
-        const updatedProduct = action.payload;
-        yield call(() => db.collection('products')
-            .where('id', '==', updatedProduct.id)
-            .get()
-            .then((querySnapshot) => {
-                querySnapshot.forEach((doc) => {
-                    db.collection('products').doc(doc.id).update(updatedProduct);
-                });
-            })
-        );
+        yield call(updateProductInDB, updatedProduct);
         yield put({ type: 'UPDATE_PRODUCT_SUCCESS', payload: updatedProduct });
     } catch (error) {
         yield put({ type: 'UPDATE_PRODUCT_FAILURE', payload: error });
     }
 }
 
-function* deleteProduct(action) {
+const deleteProduct = function* ({ payload: productId }) {
     try {
-        const productId = action.payload;
-        yield call(() => db.collection('products')
-            .where('id', '==', Number(productId))
-            .get()
-            .then((querySnapshot) => {
-                querySnapshot.forEach((doc) => {
-                    doc.ref.delete().then(() => {
-                        console.log('Product successfully deleted!');
-                    });
-                });
-            })
-        );
+        yield call(deleteProductFromDB, productId);
         yield put({ type: 'DELETE_PRODUCT_SUCCESS', payload: productId });
     } catch (error) {
         yield put({ type: 'DELETE_PRODUCT_FAILURE', payload: error });
